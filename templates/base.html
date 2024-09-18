@@ -1,0 +1,57 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <title>{% block title %}Template{% endblock %}</title>
+  {% include 'partials/head_links.html' %}
+  {% block specific_css %} {% endblock %}
+  <!-- endinject -->
+</head>
+
+<body>
+  <div class="container-scroller">
+
+    <!-- partial:partials/_navbar.html -->
+    {% include 'partials/navbar.html' %}
+    <div class="container-fluid page-body-wrapper">
+      <!-- partial:partials/_settings-panel.html -->
+
+      <!-- partial -->
+      {% include 'partials/sidebar.html' %}
+
+
+      <!-- partial -->
+      <div class="main-panel">
+        <div class="content-wrapper">
+          {% block main_content %}
+          {% endblock %}
+
+        </div>
+        <!-- content-wrapper ends -->
+        <!-- partial:partials/_footer.html -->
+        {% include 'partials/footer.html' %}
+
+        <!-- partial -->
+      </div>
+      <!-- main-panel ends -->
+    </div>
+    <!-- page-body-wrapper ends -->
+  </div>
+  <!-- container-scroller -->
+
+  <!-- base:js -->
+  {% include 'partials/scripts.html' %}
+  {% block specific_js %}{% endblock %}
+
+  <!-- endinject -->
+  <!-- Custom js for this page-->
+
+  <!-- End custom js for this page-->
+</body>
+
+
+<!-- Mirrored from demo.bootstrapdash.com/polluxui/template/demo/vertical-default-light/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 26 Jul 2023 05:57:59 GMT -->
+
+</html>

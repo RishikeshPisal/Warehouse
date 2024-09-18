@@ -1,0 +1,4 @@
+price_per_unit where?
+can it change anytime?
+what happens to the rent?
+what if rent per unit is changed in between?

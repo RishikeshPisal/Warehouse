@@ -1,0 +1,44 @@
+.controls {
+    display: flex;
+    flex-direction: row;
+    /* justify-content: start; */
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.controls>button,.control>a {
+    background-color: #fff;
+    border: none;
+    border-radius: 10px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.controls>button:not(.active):hover, .controls>a:not(.active):hover{
+    background-color: #fff;
+    color: #844FC1;
+}
+
+.btn-primary.active:focus {
+    border: none;
+    box-shadow: none;
+}
+
+.controls>button:has(.active) {
+    font-weight: 600 !important;
+    background-color: #844FC1;
+    border: none;
+}
+
+@media screen and (width <=515px) {
+    .controls {
+        flex-direction: column;
+        align-items: start;
+        /* justify-content: start; */
+    }
+
+    .controls>button {
+        flex: 1;
+        width: 100%;
+    }
+}

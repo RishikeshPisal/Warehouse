@@ -1,0 +1,66 @@
+@font-face{
+  font-family: 'Quicksand';
+  src: url("../../fonts/Quicksand-SemiBold.ttf");
+  font-weight: 600;
+  font-style: normal;
+}
+*{
+  font-family: Arial, Helvetica, sans-serif;
+}
+#nav_profile_image{
+  object-fit:contain;
+}
+.auth .auth-form-light select {
+  color: #000 !important;
+  border: 1px solid #f3f3f3;
+}
+.form-control{
+  color:#000 !important;
+}
+.page-body-wrapper{
+  background-color: #f1e9e9 !important;
+}
+.footer{
+  background-color: #f1e9e9 !important;
+}
+.dropdown .dropdown-menu .dropdown-item {
+  margin-top:0.2rem;
+}
+.downdown .btn{
+  padding:0.5rem 1rem !important  ;
+}
+.filter-card input,.filter-card select{
+  border-radius: 10px;
+  background-color: #e7e7e7;
+}
+.filter-card input{
+  padding: 0.775rem 1rem;
+}
+.filter-card .card-body{
+  display: flex;
+  align-items: center;
+  gap:1rem;
+  flex-wrap: wrap;
+}
+.filter-card .card-body button{
+  min-width: 6rem;
+}
+button  a{
+  color : unset !important;
+}
+.nav-item svg {
+  flex-grow: 0;
+  flex-shrink: 0;
+  margin-right: .5rem;
+  line-height: 1;
+  height:20px;
+}
+.sidebar .nav .nav-item .nav-link svg {
+  font-size: 1.215rem;
+  line-height: 1;
+  margin-right: .75rem;
+  color: #6c7293;
+}
+.sidebar .nav .nav-item .nav-link svg path {
+  fill:#6c7293;
+}

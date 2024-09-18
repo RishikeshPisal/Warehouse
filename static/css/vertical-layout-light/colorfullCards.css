@@ -1,0 +1,45 @@
+.bg-soft-info, .bg-soft-1 {
+    color: #08B1BA;
+    background-color: rgba(8, 177, 186, .2) !important;
+  }
+
+  .bg-soft-warning, .bg-soft-2 {
+    color: #d95f18;
+    background-color: rgba(241, 106, 27, .2) !important;
+  }
+
+  .bg-soft-danger, .bg-soft-3 {
+    color: #ad2d1e;
+    background-color: rgba(192, 50, 33, .2) !important;
+  }
+
+  .bg-soft-primary, .bg-soft-4 {
+    color: #3a57e8;
+    background-color: rgba(58, 87, 232, .2) !important;
+  }
+
+  .card-box .card-container .outer-box {
+    box-shadow: 3px 3px 3px;
+  }
+
+  .card-box .card-container .outer-box h2 {
+    color: #000;
+    font-size: 1.8rem;
+  }
+
+  .card-box .card-container .outer-box .card-body {
+    padding: 1.5rem 0.9rem;
+  }
+
+  .card-box .card-container .outer-box .card-body>div {
+    gap: 0.5rem;
+  }
+
+  .card-box .card-container .inner-box {
+    box-shadow: 3px 3px 3px;
+  }
+
+  .card-box .card-container {
+    margin-bottom: 1rem;
+    /* min-width: 220px; */
+  }

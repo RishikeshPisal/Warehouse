@@ -1,0 +1,30 @@
+.member-view-hover-box{
+  display: none;
+  background-color: #f1e9e9;
+  position: absolute;
+  z-index: 999;
+  opacity: 0;
+  padding:0.2rem;
+  top:6.5rem;
+}
+.upwards{
+  top:-9.5rem;
+}
+.member-view-hover-box .data-pair{
+  display: flex;
+  justify-content: space-between;
+  gap:3rem;
+  font-size: 0.8rem;
+
+}
+.member-view-box:hover > .member-view-hover-box{
+  display: block;
+  opacity: 100;
+  transition: opacity 0.2s ease-in-out;
+}
+/* 
+sponsor-id
+sponsor-name
+
+left members
+right members */

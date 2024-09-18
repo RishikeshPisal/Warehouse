@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+All Entries
+{% endblock %}
+{% block specific_css %}
+<link rel="stylesheet" href="{% static 'vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}">
+<link rel="stylesheet" href="{% static 'vendors/datatables.net-bs4/jquery-ui.css' %}">
+<link rel="stylesheet" href="{% static 'css/vertical-layout-light/colorfullCards.css' %}">
+<link rel="stylesheet" href="{% static 'vendors/jquery-toast-plugin/jquery.toast.min.css' %}">
+
+{% endblock %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- jQuery UI -->
+<!-- <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+<!-- DataTables CSS -->
+<!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"> -->
+
+{% block main_content %}
+
+
+
+<div class="card">
+  <div class="card-body">
+    <h4 class="card-title">All Entries</h4>
+    <div class="row">
+      <div class="col-12">
+        <div class="table-responsive">
+          <table id="order-listing" class="table">
+            <thead>
+              <tr class="bg-primary text-white">
+                  <th>Entry No.</th>
+                  <th>Customer</th>
+                  <th>Crop</th>
+                  <th>Sacks</th>
+                  <th>Weight</th>
+                  <th>Price per unit</th>
+                  <th>Arrival</th>
+                  <th>Total Rent</th>
+                  <th>Rent Paid</th>
+                  <th>Rent Due</th>
+                  <th>Open/Closed</th>
+                  <!-- <th>Actions</th> -->
+              </tr>
+            </thead>
+            <tbody>
+
+              {% for entry in entries %}
+              <tr>
+                  <td>{{entry.id}}</td>
+                  <td>{{entry.customer.name}}</td>
+                  <td>{{entry.crop.name}}</td>
+                  <td>{{entry.sacks}}</td>
+                  <td>{{entry.weight}} {{entry.unit}}</td>
+                  <td>{{entry.price_per_unit}}</td>
+                  <td>{{entry.arrival_time|date:"d/m/Y"}}</td>
+                  <td>{{entry.get_total_rent}}</td>
+                  <td>{{entry.rent_paid}}</td>
+                  <td>{{entry.get_due_rent}}</td>
+                  <td>
+                    {% if entry.closed %}
+                      <span class="badge badge-danger">Closed</span>
+                    {% else %}
+                      <span class="badge badge-success">Open</span>
+                    {% endif %}
+                  </td>
+
+                  <!-- <td class="text-end">
+                    <button class="btn btn-light">
+                      <i class="typcn typcn-eye text-primary"></i>View
+                    </button>
+                    <button class="btn btn-light">
+                      <i class="typcn typcn-times text-danger"></i>Remove
+                    </button>
+                  </td> -->
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}
+{% block specific_js %}
+<!-- End plugin js for this page -->
+<script src="{% static 'vendors/datatables.net/jquery.dataTables.js' %}"></script>
+<script src="{% static 'vendors/datatables.net-bs4/dataTables.bootstrap4.js' %}"></script>
+<script src="{% static 'vendors/datatables.net/jquery-ui.js' %}"></script>
+<script src="{% static 'vendors/datatables.net/dataTables.buttons.min.js' %}"></script>
+<!-- <script src="{% static 'vendors/datatables.net/jquery-3.6.0.min.js' %}"></script> -->
+<!-- Custom js for this page-->
+
+<script src="{% static 'vendors/jquery-toast-plugin/jquery.toast.min.js' %}"></script>
+<script src="{% static 'js/toastDemo.js' %}"></script>
+{% if notification == 'success' %}
+<script>
+  showSuccessToast('Franchise Created') 
+</script>
+{% elif notification == 'failed' %}
+<script>
+  showDangerToast()
+</script>
+
+{% elif notification is not None %}
+<script>
+  showDangerToast('{{notification}}')
+</script>
+{% endif %}
+{% endblock %}

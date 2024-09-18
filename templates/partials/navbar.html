@@ -1,0 +1,85 @@
+{% load static %}
+<nav class="navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row">
+  <div class="navbar-brand-wrapper d-flex justify-content-center">
+    <div class="navbar-brand-inner-wrapper d-flex justify-content-between align-items-center">
+      <a class="navbar-brand brand-logo" href="">
+        <img src="{% static 'images/ovi_logo.png' %}" style="width:unset;height:55px" alt="logo" /></a>
+      <a class="navbar-brand brand-logo-mini" href="index.html"><img src="{% static 'images/ovi_logo.png' %}"
+          alt="logo" /></a>
+      <button class="navbar-toggler navbar-toggler align-self-center mx-2 ml-4" type="button" data-toggle="minimize">
+        <span class="typcn typcn-th-menu"></span>
+      </button>
+    </div>
+  </div>
+  <div class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
+    <ul class="navbar-nav mr-lg-2">
+      <li class="nav-item nav-profile dropdown">
+        <a class="nav-link" href="#" data-bs-toggle="dropdown" id="profileDropdown">
+          <img id="nav_profile_image" src="{% static 'images/ovi_logo.png' %}" alt="profile " />
+          <!-- <span class="nav-profile-name">{{request.user.full_name}}</span> -->
+        </a>
+        <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
+          <a class="dropdown-item">
+            <i class="typcn typcn-cog-outline text-primary"></i>
+            Settings
+          </a>
+          <a class="dropdown-item">
+            <i class="typcn typcn-eject text-primary"></i>
+            Logout
+          </a>
+        </div>
+      </li>
+      <li class="nav-item nav-user-status dropdown">
+        <p class="mb-0">Last login was {{request.session.last_login}} ago.</p>
+      </li>
+    </ul>
+    <ul class="navbar-nav navbar-nav-right">
+      {% if request.user.user_type == 1 %}
+      <li id="kyc-status" class="nav-item nav-date dropdown kyc-status">
+        {% if member.is_aadhar_approved and member.is_pan_approved and member.is_bank_passbook_approved%}
+        <span class="badge badge-success">
+          <h6 class="date mb-0">KYC Approved</h6>
+        </span>
+        {% else %}
+        <span class="badge badge-danger">
+          <h6 class="date mb-0">KYC Not Approved</h6>
+        </span>
+        {% endif %}
+        </a>
+      </li>
+      {% endif %}
+      <li class="nav-item nav-date dropdown">
+        <a class="nav-link d-flex justify-content-center align-items-center" href="javascript:;">
+          <h6 class="date mb-0">Today : {{request.session.today}}</h6>
+          <i class="typcn typcn-calendar"></i>
+        </a>
+      </li>
+
+      <li class="nav-item dropdown me-0">
+        <a class="nav-link count-indicator dropdown-toggle d-flex align-items-center justify-content-center"
+          id="notificationDropdown" href="#" data-bs-toggle="dropdown">
+          <i class="typcn typcn-cog-outline mx-0"></i>
+          <span class="count"></span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list p-2 "
+          aria-labelledby="notificationDropdown">
+          <a class="dropdown-item preview-item p-0" href="">
+            <div class="preview-thumbnail w-100">
+              <button type="button" class="btn btn-primary w-100 py-3 px-2 mb-1">Update Profile</button>
+            </div>
+          </a>
+          <a class="dropdown-item preview-item p-0">
+            <div class="preview-thumbnail w-100">
+              <button type="button" class="btn btn-danger w-100 py-3 px-2">Logout</button>
+            </div>
+          </a>
+
+        </div>
+      </li>
+    </ul>
+    <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button"
+      data-toggle="offcanvas">
+      <span class="typcn typcn-th-menu"></span>
+    </button>
+  </div>
+</nav>

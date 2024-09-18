@@ -1,0 +1,52 @@
+#test{
+    color:#2609e0;
+}
+.mb-6{
+    margin-bottom:1.5rem;
+}
+.repeater-wrapper:not(:last-child),
+.repeater-wrapper:not(:last-child) {
+    margin-bottom: 1.5rem;
+}
+
+ .app-brand-text {
+    font-size: 1.25rem;
+    line-height: 1.5rem;
+}
+
+.invoice-preview-card .table thead tr th {
+    background-color: rgba(0, 0, 0, 0) !important;
+    border-color: #e6e5e8;
+}
+
+.invoice-preview-header,
+ .invoice-preview-header,
+.invoice-add .invoice-preview-header {
+    background-color: rgba(46, 38, 61, .06);
+}
+
+.dark-style .invoice-preview-card .invoice-preview-header,
+.dark-style  .invoice-preview-header,
+.dark-style .invoice-add .invoice-preview-header {
+    background-color: rgba(231, 227, 252, .06) !important;
+}
+
+.dark-style .invoice-preview-card .table thead tr th {
+    border-color: #474360;
+}
+
+@media(min-width: 768px) {
+
+     .repeater-title,
+    .invoice-add .repeater-title {
+        position: absolute;
+        top: -2.4rem;
+    };
+}
+@media(max-width: 575.98px) {
+
+     .invoice-preview-card .invoice-calculations,
+    .invoice-add .invoice-preview-card .invoice-calculations {
+        width: 100%;
+    };
+}
