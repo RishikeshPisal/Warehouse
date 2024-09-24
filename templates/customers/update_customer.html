@@ -23,20 +23,20 @@ Update Customer
 
 <div class="card">
   <div class="card-body">
-    <h4 class="card-title">Update Customer</h4>
+    <h4 class="card-title">ग्राहक अपडेट करा</h4>
     <form class="form-sample mt-4" enctype="multipart/form-data" method="post" id="sign_up_form"
       action="{% url 'update_customer_view' customer.id %}">
       {% csrf_token %}
       {{form.errors}}
       {{errors}}
       <p class="card-description">
-        Personal info
+        ग्राहक माहिती 
       </p>
 
       <div class="row">
         <div class="col-md-6">
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Customer Name</label>
+            <label class="col-sm-3 col-form-label">ग्राहकाचे नाव</label>
             <div class="col-sm-9">
               <!-- <input type="text" class="form-control"> -->
               {{ form.name }}
@@ -45,18 +45,17 @@ Update Customer
         </div>
         <div class="col-md-6">
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Mobile No.</label>
+            <label class="col-sm-3 col-form-label">मोबाईल नंबर</label>
             <div class="col-sm-9">
               <!-- <input class="form-control" placeholder="dd/mm/yyyy"> -->
               {{ form.contact_number }}
             </div>
           </div>
         </div>
-      </div>
-      <div class="row">
+
         <div class="col-md-6">
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Email </label>
+            <label class="col-sm-3 col-form-label">ईमेल </label>
             <div class="col-sm-9">
               {{ form.email }}
             </div>
@@ -66,51 +65,30 @@ Update Customer
 
       <hr>
       <p class="card-description">
-        Address
+        राहणार
       </p>
       <div class="row">
         <div class="col-md-6">
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Address Line</label>
+            <label class="col-sm-3 col-form-label">तालुका</label>
             <div class="col-sm-9">
               <!-- <input type="text" class="form-control"> -->
-              {{ form.address }}
+              {{ form.taluka }}
             </div>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label">City</label>
+            <label class="col-sm-3 col-form-label">जिल्हा</label>
             <div class="col-sm-9">
               <!-- <input type="text" class="form-control"> -->
-              {{ form.city }}
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form-group row">
-            <label class="col-sm-3 col-form-label">State</label>
-            <div class="col-sm-9">
-              <!-- <input type="text" class="form-control"> -->
-              {{ form.state}}
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Postal Code</label>
-            <div class="col-sm-9">
-              <!-- <input type="text" class="form-control"> -->
-              {{ form.pin_code}}
+              {{ form.zila }}
             </div>
           </div>
         </div>
       </div>
 
-
-      <button class="btn btn-primary" id="submit_button" type="submit">Update</button>
+      <button class="btn btn-primary" id="submit_button" type="submit">अपडेट</button>
 
     </form>
   </div>

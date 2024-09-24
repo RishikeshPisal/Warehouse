@@ -47,10 +47,7 @@ INSTALLED_APPS = [
     'configurations',
     'customers',
     'user',
-    'crops',
     'entries',
-    'rent',
-    'loans',
 ]
 
 MIDDLEWARE = [

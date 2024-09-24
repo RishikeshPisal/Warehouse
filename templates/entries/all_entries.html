@@ -30,43 +30,50 @@ All Entries
           <table id="order-listing" class="table">
             <thead>
               <tr class="bg-primary text-white">
-                  <th>Entry No.</th>
-                  <th>Customer</th>
-                  <th>Crop</th>
-                  <th>Sacks</th>
-                  <th>Weight</th>
-                  <th>Price per unit</th>
-                  <th>Arrival</th>
-                  <th>Total Rent</th>
-                  <th>Rent Paid</th>
-                  <th>Rent Due</th>
-                  <th>Open/Closed</th>
-                  <!-- <th>Actions</th> -->
+                <th>Entry No.</th>
+                <th>Customer</th>
+                <th>Crop</th>
+                <th>Sacks</th>
+                <th>Weight</th>
+                <th>Price per unit</th>
+                <th>Arrival</th>
+                <th>Total Rent</th>
+                <th>Rent Paid</th>
+                <th>Rent Due</th>
+                <th>Open/Closed</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
 
               {% for entry in entries %}
               <tr>
-                  <td>{{entry.id}}</td>
-                  <td>{{entry.customer.name}}</td>
-                  <td>{{entry.crop.name}}</td>
-                  <td>{{entry.sacks}}</td>
-                  <td>{{entry.weight}} {{entry.unit}}</td>
-                  <td>{{entry.price_per_unit}}</td>
-                  <td>{{entry.arrival_time|date:"d/m/Y"}}</td>
-                  <td>{{entry.get_total_rent}}</td>
-                  <td>{{entry.rent_paid}}</td>
-                  <td>{{entry.get_due_rent}}</td>
-                  <td>
-                    {% if entry.closed %}
-                      <span class="badge badge-danger">Closed</span>
-                    {% else %}
-                      <span class="badge badge-success">Open</span>
-                    {% endif %}
-                  </td>
+                <td>{{entry.id}}</td>
+                <td>{{entry.customer.name}}</td>
+                <td>{{entry.crop.name}}</td>
+                <td>{{entry.sacks}}</td>
+                <td>{{entry.weight}} {{entry.unit}}</td>
+                <td>{{entry.price_per_unit}}</td>
+                <td>{{entry.arrival_time|date:"d/m/Y"}}</td>
+                <td>{{entry.get_total_rent}}</td>
+                <td class="text-center">
+                  {{entry.rent_paid}}
+                </td>
+                <td>{{entry.get_due_rent}}</td>
+                <td>
+                  {% if entry.closed %}
+                  <span class="badge badge-danger">Closed</span>
+                  {% else %}
+                  <span class="badge badge-success">Open</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <button class="btn btn-primary py-1 w-100 mt-1" onclick="showSwal('pay-rent')">Pay Rent</button>
+                  <br>
+                  <button class="btn btn-primary py-1 w-100 mt-1">Settle</button>
+                </td>
 
-                  <!-- <td class="text-end">
+                <!-- <td class="text-end">
                     <button class="btn btn-light">
                       <i class="typcn typcn-eye text-primary"></i>View
                     </button>
@@ -78,6 +85,9 @@ All Entries
               {% endfor %}
             </tbody>
           </table>
+          <form action="" method="post" class="d-none">
+            input
+          </form>
         </div>
       </div>
     </div>
@@ -96,7 +106,107 @@ All Entries
 <!-- Custom js for this page-->
 
 <script src="{% static 'vendors/jquery-toast-plugin/jquery.toast.min.js' %}"></script>
+<script src="{% static 'vendors/sweetalert/sweetalert.min.js' %}"></script>
 <script src="{% static 'js/toastDemo.js' %}"></script>
+<script>
+  (function ($) {
+    showSwal = function (type, form) {
+      'use strict';
+      // const fundTransferForm = document.getElementById('fund-transfer-form')
+      if (type === 'basic') {
+        swal({
+          text: 'Any fool can use a computer',
+          button: {
+            text: "OK",
+            value: true,
+            visible: true,
+            className: "btn btn-primary"
+          }
+        })
+
+
+        
+      } else if (type === 'pay-rent') {
+        swal({
+          content: {
+            element: "input",
+            attributes: {
+              placeholder: "Enter Amount",
+              type: "password",
+              class: 'form-control'
+            },
+          },
+          button: {
+            text: "OK",
+            value: true,
+            visible: true,
+            className: "btn btn-primary"
+          }
+        })
+        document.getElementsByClassName('swal-button--confirm')[0].addEventListener('click', () => {
+          // remove the unnecessary loader
+          const loader = document.getElementsByClassName('swal-button__loader')[0]
+          if (loader) loader.remove()
+          
+          // form = Form.Data
+          const amount = document.getElementsByClassName('swal-content__input')[0]
+          if (amount.value !== '' && amount.value !== 0) {
+            form.submit()
+          }
+          else {
+            const warning = document.getElementById('fix-errors')
+            warning.classList.remove('d-none')
+            console.log('problem')
+          }
+        })
+      } else if (type === 'withdrawal-request') {
+        if (form?.classList.contains('d-none'))
+          form.classList.remove('d-none')
+        swal({
+          content: form,
+          buttons: {
+            submit: {
+              text: "Submit",
+              value: false,
+              visible: true,
+              className: "btn btn-success",
+              loaderHtml: '',
+              closeModal: false,
+            },
+            cancel: {
+              text: "Cancel",
+              value: true,
+              visible: true,
+              className: "btn btn-danger",
+              closeModal: true
+            }
+          }
+        })
+        document.getElementsByClassName('swal-button--submit')[0].addEventListener('click', () => {
+          // remove the unnecessary loader
+          const loader = document.getElementsByClassName('swal-button__loader')[0]
+          if (loader) loader.remove()
+          // perform validations
+          const amount = document.getElementById('amount-in-wdr')
+          const countWarning = document.getElementById('amount-warning-in-wdr')
+          if (countWarning.classList.contains('d-none') && amount.value !== '') {
+            form.submit()
+          }
+          else {
+            const warning = document.getElementById('fix-errors')
+            warning.classList.remove('d-none')
+            console.log('problem')
+          }
+        })
+
+      }
+      else {
+        console.log("Type not mentioned in alert.js")
+      }
+    }
+
+  })(jQuery);
+</script>
 {% if notification == 'success' %}
 <script>
   showSuccessToast('Franchise Created') 
@@ -112,3 +222,27 @@ All Entries
 </script>
 {% endif %}
 {% endblock %}
+<!-- 
+
+    inward form->{ vehicle number }
+
+    slips -> entry inward outward settle
+
+
+
+  db
+  master
+  new customer
+  inward (new, active(table) add section)
+  pay (similar to inward) (payment summary)
+  outward
+
+
+
+  Customer
+  crop (section)
+  insurance
+  vehicle (driver name)
+
+
+ -->

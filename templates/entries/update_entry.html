@@ -1,0 +1,126 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+Add Entry
+{% endblock %}
+{% block specific_css %}
+<link rel="stylesheet" href="{% static 'vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}">
+<link rel="stylesheet" href="{% static 'vendors/datatables.net-bs4/jquery-ui.css' %}">
+<link rel="stylesheet" href="{% static 'css/vertical-layout-light/colorfullCards.css' %}">
+<link rel="stylesheet" href="{% static 'vendors/jquery-toast-plugin/jquery.toast.min.css' %}">
+
+{% endblock %}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- jQuery UI -->
+<!-- <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+<!-- DataTables CSS -->
+<!-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"> -->
+
+{% block main_content %}
+
+
+
+<div class="card">
+  <div class="card-body">
+    <h4 class="card-title">Add new Entry</h4>
+    <form class="form-sample mt-4" enctype="multipart/form-data" method="post" id="sign_up_form"
+      action="{% url 'add_entry_view' %}">
+      {% csrf_token %}
+      {{form.errors}}
+      {{errors}}
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Customer</label>
+            <div class="col-sm-9">
+              <!-- <input type="text" class="form-control"> -->
+              {{ form.customer }}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Crop</label>
+            <div class="col-sm-9">
+              <!-- <input class="form-control" placeholder="dd/mm/yyyy"> -->
+              {{ form.crop }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Unit </label>
+            <div class="col-sm-9">
+              {{ form.unit }}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Total Weight</label>
+            <div class="col-sm-9">
+              <!-- <input type="text" class="form-control"> -->
+              {{ form.weight }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">No. of Sacks </label>
+            <div class="col-sm-9">
+              {{ form.sacks }}
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Price per Unit(kg/ton)</label>
+            <div class="col-sm-9">
+              <!-- <input type="text" class="form-control"> -->
+              {{ form.price_per_unit }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <button class="btn btn-primary" id="submit_button" type="submit">Create</button>
+
+    </form>
+  </div>
+
+</div>
+
+{% endblock %}
+{% block specific_js %}
+<!-- End plugin js for this page -->
+<script src="{% static 'vendors/datatables.net/jquery.dataTables.js' %}"></script>
+<script src="{% static 'vendors/datatables.net-bs4/dataTables.bootstrap4.js' %}"></script>
+<script src="{% static 'vendors/datatables.net/jquery-ui.js' %}"></script>
+<script src="{% static 'vendors/datatables.net/dataTables.buttons.min.js' %}"></script>
+<!-- <script src="{% static 'vendors/datatables.net/jquery-3.6.0.min.js' %}"></script> -->
+<!-- Custom js for this page-->
+
+<script src="{% static 'vendors/jquery-toast-plugin/jquery.toast.min.js' %}"></script>
+<script src="{% static 'js/toastDemo.js' %}"></script>
+{% if notification == 'success' %}
+<script>
+  showSuccessToast('Entry Added') 
+</script>
+{% elif notification == 'failed' %}
+<script>
+  showDangerToast()
+</script>
+
+{% elif notification is not None %}
+<script>
+  showDangerToast('{{notification}}')
+</script>
+{% endif %}
+{% endblock %}

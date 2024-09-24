@@ -15,24 +15,31 @@ def add_customer_view(request):
       notification = 'success'
     else:
       print(form.errors)
-      notification = 'failed' 
+      notification = form.errors.as_text()   
 
   form = AddCustomerForm()
-  return render(request,'customers/add_customer.html',{'form':form,'notification':notification})
+  customers = Customer.objects.all()
+  return render(request,'customers/add_customer.html',{
+    'form':form,
+    'notification':notification,
+    'customers':customers
+    })
 
 @login_required(login_url="/")
 def update_customer_view(request,pk=None):
-  customer = Customer.objects.get(id=pk)
-  notification = None
-  if request.method == 'POST':
-    form = AddCustomerForm(request.POST,instance=customer)
-    if form.is_valid():
-      customer = form.save()
-      notification = 'success'
-    else:
-      print(form.errors)
-      notification = 'failed'
-
+  try:
+    customer = Customer.objects.get(id=pk)
+    notification = None
+    if request.method == 'POST':
+      form = AddCustomerForm(request.POST,instance=customer)
+      if form.is_valid():
+        customer = form.save()
+        notification = 'success'
+      else:
+        print(form.errors)
+        notification = 'failed'
+  except Exception as e:
+    notification = str(e)
   form = AddCustomerForm(instance=customer)
   return render(request,'customers/update_customer.html',{'form':form,'notification':notification,'customer':customer})
 

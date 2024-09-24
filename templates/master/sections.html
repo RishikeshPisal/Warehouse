@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}
-Add Unit
+Add Section
 {% endblock %}
 {% block specific_css %}
 <link rel="stylesheet" href="{% static 'vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}">
@@ -23,16 +23,21 @@ Add Unit
 
 <div class="card mb-2">
   <div class="card-body">
-    <h4 class="card-title">Create a new Unit for Crops</h4>
+    <h4 class="card-title">नवीन चौकी टाका</h4>
+    {% if section %}
     <form class="form-sample mt-4" enctype="multipart/form-data" method="post" id="sign_up_form"
-      action="{% url 'add_unit_view' %}">
+      action="{% url 'section_view' section.id  %}">
+    {% else %}
+    <form class="form-sample mt-4" enctype="multipart/form-data" method="post" id="sign_up_form"
+      action="{% url 'section_view'  %}">
+    {% endif %}
       {% csrf_token %}
       {{form.errors}}
       {{errors}}
       <div class="row">
         <div class="col-md-6">
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Unit Name</label>
+            <label class="col-sm-3 col-form-label">चौकीचे नाव</label>
             <div class="col-sm-9">
               <!-- <input type="text" class="form-control"> -->
               {{ form.name }}
@@ -40,28 +45,47 @@ Add Unit
           </div>
         </div>
       </div>
-      <button class="btn btn-primary" id="submit_button" type="submit">Create</button>
+      <button class="btn btn-primary" id="submit_button" type="submit">
+        {% if section %}
+          अपडेट
+        {% else %}
+          टाका
+        {% endif %}
+      </button>
     </form>
   </div>
 </div>
 <div class="card">
   <div class="card-body">
-    <h4 class="card-title">All units</h4>
+    <h4 class="card-title">सर्व चौकी</h4>
     <div class="row">
       <div class="col-12">
         <div class="table-responsive">
           <table id="order-listing" class="table order-listing">
             <thead>
               <tr>
-                <th>Sr.no.</th>
-                <th>Name</th>
+                <th>क्रमांक</th>
+                <th>नाव</th>
+                <th>क्रिया</th>
               </tr>
             </thead>
             <tbody>
-              {% for unit in units %}
+              {% for section in sections %}
               <tr>
                 <td>{{ forloop.counter }}</td>
-                <td>{{ unit.name }}</td>
+                <td>{{ section.name }}</td>
+                <td class="text-left">
+                  <div class="dropdown">
+                    <button type="button" class="btn btn-info dropdown-toggle" id="dropdownMenuIconButton1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding:0.5rem 1rem">
+                      <i class="typcn typcn-user"></i>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton1">
+                      <a class="dropdown-item" href="{% url 'section_view' section.id %}">अपडेट</a>
+                      <a class="dropdown-item" href="{% url 'delete_section' section.id %}">डिलीट</a>
+
+                    </div>
+                  </div>
+                </td>
               </tr>
               {% endfor %}
 
@@ -87,11 +111,19 @@ Add Unit
 <script src="{% static 'js/toastDemo.js' %}"></script>
 {% if notification == 'success' %}
 <script>
-  showSuccessToast('unit Added') 
+  showSuccessToast('Section Added') 
+</script>
+{% elif notification == 'deleted' %}
+<script>
+  showSuccessToast('Section Deleted') 
+</script>
+{% elif notification == 'updated' %}
+<script>
+  showSuccessToast('Section Updated')   
 </script>
 {% elif notification is not None %}
 <script>
-  showDangerToast('{{notification}}')
+  showDangerToast('{{notification}}') 
 </script>
 {% endif %}
 {% endblock %}

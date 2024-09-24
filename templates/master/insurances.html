@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}
-Add Customer
+Add Insurance
 {% endblock %}
 {% block specific_css %}
 <link rel="stylesheet" href="{% static 'vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}">
@@ -21,84 +21,43 @@ Add Customer
 
 
 
-<div class="card">
+<div class="card mb-2">
   <div class="card-body">
-    <h4 class="card-title">ग्राहक जोडा</h4>
+    <h4 class="card-title">नवीन विमा टाका</h4>
+    {% if insurance %}
     <form class="form-sample mt-4" enctype="multipart/form-data" method="post" id="sign_up_form"
-      action="{% url 'add_customer_view' %}">
+      action="{% url 'insurance_view' insurance.id  %}">
+    {% else %}
+    <form class="form-sample mt-4" enctype="multipart/form-data" method="post" id="sign_up_form"
+      action="{% url 'insurance_view'  %}">
+    {% endif %}
       {% csrf_token %}
       {{form.errors}}
       {{errors}}
-      <p class="card-description">
-        ग्राहक माहिती 
-      </p>
-
       <div class="row">
         <div class="col-md-6">
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label">ग्राहकाचे नाव</label>
+            <label class="col-sm-3 col-form-label">विमाचे नाव</label>
             <div class="col-sm-9">
               <!-- <input type="text" class="form-control"> -->
               {{ form.name }}
             </div>
           </div>
         </div>
-        <div class="col-md-6">
-          <div class="form-group row">
-            <label class="col-sm-3 col-form-label">मोबाईल नंबर</label>
-            <div class="col-sm-9">
-              <!-- <input class="form-control" placeholder="dd/mm/yyyy"> -->
-              {{ form.contact_number }}
-            </div>
-          </div>
-        </div>
-
-        <div class="col-md-6">
-          <div class="form-group row">
-            <label class="col-sm-3 col-form-label">ईमेल </label>
-            <div class="col-sm-9">
-              {{ form.email }}
-            </div>
-          </div>
-        </div>
       </div>
-
-      <hr>
-      <p class="card-description">
-        राहणार
-      </p>
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form-group row">
-            <label class="col-sm-3 col-form-label">तालुका</label>
-            <div class="col-sm-9">
-              <!-- <input type="text" class="form-control"> -->
-              {{ form.taluka }}
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6">
-          <div class="form-group row">
-            <label class="col-sm-3 col-form-label">जिल्हा</label>
-            <div class="col-sm-9">
-              <!-- <input type="text" class="form-control"> -->
-              {{ form.zila }}
-            </div>
-          </div>
-        </div>
-      </div>
-
-
-
-      <button class="btn btn-primary" id="submit_button" type="submit">जोडा</button>
-
+      <button class="btn btn-primary" id="submit_button" type="submit">
+        {% if insurance %}
+          अपडेट
+        {% else %}
+          टाका
+        {% endif %}
+      </button>
     </form>
   </div>
-
 </div>
-<div class="card mt-2">
+<div class="card">
   <div class="card-body">
-    <h4 class="card-title">सर्व ग्राहक</h4>
+    <h4 class="card-title">सर्व विमा</h4>
     <div class="row">
       <div class="col-12">
         <div class="table-responsive">
@@ -107,28 +66,25 @@ Add Customer
               <tr>
                 <th>क्रमांक</th>
                 <th>नाव</th>
-                <th>मोबाईल नंबर</th>
-                <th>ईमेल</th>
-                <th>तालुका</th>
-                <th>जिल्हा</th>
-                <th>जोडण्याची तारीख</th>
                 <th>क्रिया</th>
               </tr>
             </thead>
             <tbody>
-              {% for customer in customers %}
+              {% for insurance in insurances %}
               <tr>
                 <td>{{ forloop.counter }}</td>
-                <td>{{ customer.name }}</td>
-                <td>{{ customer.contact_number }}</td>
-                <td>{{ customer.email }}</td>
-                <td>{{ customer.taluka }}</td>
-                <td>{{ customer.zila }}</td>
-                <td>{{ customer.time|date:"d/m/Y" }}</td>
-                <td>
-                  <a class="btn btn-outline-primary p-2" href="{% url 'update_customer_view' customer.id %}">
-                    अपडेट
-                  </a>
+                <td>{{ insurance.name }}</td>
+                <td class="text-left">
+                  <div class="dropdown">
+                    <button type="button" class="btn btn-info dropdown-toggle" id="dropdownMenuIconButton1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding:0.5rem 1rem">
+                      <i class="typcn typcn-user"></i>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton1">
+                      <a class="dropdown-item" href="{% url 'insurance_view' insurance.id %}">अपडेट</a>
+                      <a class="dropdown-item" href="{% url 'delete_insurance' insurance.id %}">डिलीट</a>
+
+                    </div>
+                  </div>
                 </td>
               </tr>
               {% endfor %}
@@ -155,16 +111,23 @@ Add Customer
 <script src="{% static 'js/toastDemo.js' %}"></script>
 {% if notification == 'success' %}
 <script>
-  showSuccessToast('Customer Created') 
+  showSuccessToast('Insurance Added') 
 </script>
-{% elif notification == 'failed' %}
+{% elif notification == 'deleted' %}
 <script>
-  showDangerToast()
+  showSuccessToast('Insurance Deleted') 
 </script>
-
+{% elif notification == 'updated' %}
+<script>
+  showSuccessToast('Insurance Updated')   
+</script>
+{% elif notification == "error" %}
+<script>
+  showDangerToast('Insurance already exists') 
+</script>
 {% elif notification is not None %}
 <script>
-  showDangerToast('{{notification}}')
+  showDangerToast('{{notification}}') 
 </script>
 {% endif %}
 {% endblock %}

@@ -29,10 +29,13 @@ Add Entry
       {% csrf_token %}
       {{form.errors}}
       {{errors}}
+      <p class="card-description">
+        ग्राहक
+      </p>
       <div class="row">
         <div class="col-md-6">
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Customer</label>
+            <label class="col-sm-3 col-form-label">ग्राहकाचे नाव</label>
             <div class="col-sm-9">
               <!-- <input type="text" class="form-control"> -->
               {{ form.customer }}
@@ -41,18 +44,99 @@ Add Entry
         </div>
         <div class="col-md-6">
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Crop</label>
+            <label class="col-sm-3 col-form-label">मोबाईल नंबर</label>
+            <div class="col-sm-9">
+              <select class="form-control py-3" name="" id="contact_number_select" disabled>
+                <option value=""></option>
+                {% for customer in customers %}
+                  <option value="{{customer.id}}">{{customer.contact_number}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">ईमेल</label>
+            <div class="col-sm-9">
+              <select class="form-control py-3" name="" id="email_select" disabled>
+                <option value=""></option>
+                {% for customer in customers %}
+                  <option value="{{customer.id}}">{{customer.email}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">तालुका</label>
+            <div class="col-sm-9">
+              <select class="form-control py-3" name="" id="taluka_select" disabled>
+                <option value=""></option>
+                {% for customer in customers %}
+                  <option value="{{customer.id}}">{{customer.taluka}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">जिल्हा</label>
+            <div class="col-sm-9">
+              <select class="form-control py-3" name="" id="zila_select" disabled>
+                <option value=""></option>
+                {% for customer in customers %}
+                  <option value="{{customer.id}}">{{customer.zila}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <hr>
+      <p class="card-description">माल</p>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">मालाचे वर्णन</label>
             <div class="col-sm-9">
               <!-- <input class="form-control" placeholder="dd/mm/yyyy"> -->
               {{ form.crop }}
             </div>
           </div>
         </div>
-      </div>
-      <div class="row">
+
         <div class="col-md-6">
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Unit </label>
+            <label class="col-sm-3 col-form-label">वर्ग किंवा प्रमाणित दर्जा किंवा वर्णन </label>
+            <div class="col-sm-9">
+              <!-- <input type="text" class="form-control"> -->
+              {{ form.crop_category }}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">स्तिथी </label>
+            <div class="col-sm-9">
+              {{ form.crop_condition }}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">पोती नग</label>
+            <div class="col-sm-9">
+              {{ form.sacks }}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">एकक </label>
             <div class="col-sm-9">
               {{ form.unit }}
             </div>
@@ -60,33 +144,121 @@ Add Entry
         </div>
         <div class="col-md-6">
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Total Weight</label>
+            <label class="col-sm-3 col-form-label">वजन किंवा मापानुसार एकूण माल</label>
             <div class="col-sm-9">
               <!-- <input type="text" class="form-control"> -->
               {{ form.weight }}
             </div>
           </div>
         </div>
-      </div>
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form-group row">
-            <label class="col-sm-3 col-form-label">No. of Sacks </label>
-            <div class="col-sm-9">
-              {{ form.sacks }}
-            </div>
-          </div>
-        </div>
 
         <div class="col-md-6">
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Price per Unit(kg/ton)</label>
+            <label class="col-sm-3 col-form-label">माल ठेवते वेळी त्याचा बाजारातील दर</label>
             <div class="col-sm-9">
               <!-- <input type="text" class="form-control"> -->
               {{ form.price_per_unit }}
             </div>
           </div>
         </div>
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">किंमत </label>
+            <div class="col-sm-9">
+              <input type="number" name="" id="total_price" class="form-control" disabled value="0">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">
+              कर्जाची रक्कम ({{loan_amount_percentage}}%)</label>
+            <div class="col-sm-9">
+              <!-- <input type="text" class="form-control"> vyas dar -->
+              <input type="number" name="" id="loan_amount" class="form-control" disabled value="0">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">चौक क्रमांक</label>
+            <div class="col-sm-9">
+              <!-- <input type="text" class="form-control"> -->
+              {{ form.section }}
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <hr>
+      <p class="card-description">विमा</p>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">विमा कंपनी</label>
+            <div class="col-sm-9">
+              <!-- <input type="text" class="form-control"> policiy no anugyapan karam -->
+              {{ form.insurance }}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">पालिसी नंबर</label>
+            <div class="col-sm-9">
+              {{ form.policy_no }}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">नाव अनुज्ञापन क्रमांक</label>
+            <div class="col-sm-9">
+              {{ form.other_details }}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">सदर माल साठवणेसाठी दिनांक</label>
+            <div class="col-sm-9">
+              <input type="date" class="form-control" value="{% now 'd/m/Y' %}">
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">ते</label>
+            <div class="col-sm-9">
+              <!-- <input type="date" class="form-control" value="{% now 'd/m/Y' %}"> -->
+              {{form.insurance_till}}
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <hr>
+      <div class="card-description">वाहन </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">वाहन क्रमांक</label>
+            <div class="col-sm-9">
+              <!-- <input type="text" class="form-control"> -->
+              {{ form.vehicle_no }}
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">चालकाचे नाव</label>
+            <div class="col-sm-9">
+              <!-- <input type="text" class="form-control"> -->
+              {{ form.driver_name }}
+            </div>
+          </div>
+        </div>
+
       </div>
 
 
@@ -123,4 +295,70 @@ Add Entry
   showDangerToast('{{notification}}')
 </script>
 {% endif %}
+<script>
+// Wait until the DOM is fully loaded
+document.addEventListener("DOMContentLoaded", function () {
+  // Get references to the customer select field
+  const customerSelect = document.getElementById("customer");
+
+  // Get references to the other select fields
+  const contactNumberSelect = document.getElementById("contact_number_select");
+  const talukaSelect = document.getElementById("taluka_select");
+  const emailSelect = document.getElementById("email_select");
+  const zilaSelect = document.getElementById("zila_select");
+
+  // Add an event listener to the customer select field
+  customerSelect.addEventListener("change", function () {
+    // Get the selected customer's ID
+    const selectedCustomerId = customerSelect.value;
+
+    // Reset all select fields
+    contactNumberSelect.value = "";
+    talukaSelect.value = "";
+    emailSelect.value = "";
+    zilaSelect.value = "";
+
+    // Iterate through the options of each select field and update the selected value
+    Array.from(contactNumberSelect.options).forEach(option => {
+      if (option.value == selectedCustomerId) {
+        option.selected = true;
+      }
+    });
+
+    Array.from(talukaSelect.options).forEach(option => {
+      if (option.value == selectedCustomerId) {
+        option.selected = true;
+      }
+    });
+    Array.from(zilaSelect.options).forEach(option => {
+      if (option.value == selectedCustomerId) {
+        option.selected = true;
+      }
+    });
+
+    Array.from(emailSelect.options).forEach(option => {
+      if (option.value == selectedCustomerId) {
+        option.selected = true;
+      }
+    });
+
+
+  });
+});
+
+  function calculate_total_price(){
+    total_price = document.getElementById('total_price')
+    loan_amount = document.getElementById('loan_amount')
+    loan_amount_percentage = parseInt('{{loan_amount_percentage}}') // this is begin accessed from django template context
+    price_per_unit = parseInt(document.getElementById('price_per_unit').value)
+    weight = parseInt(document.getElementById('weight').value)
+    if (!isNaN(price_per_unit) && !isNaN(weight)){
+      total_price.classList.remove('d-none') 
+      total_price.value = price_per_unit*weight
+      loan_amount.value = (total_price.value*loan_amount_percentage)/100
+    }
+  }
+  document.getElementById('price_per_unit').onkeyup = calculate_total_price
+  document.getElementById('weight').onkeyup = calculate_total_price
+</script>
 {% endblock %}
