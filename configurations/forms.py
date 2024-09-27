@@ -7,9 +7,8 @@ from .models import *
 class SettingsForm(forms.ModelForm):
   class Meta:
     model = Setting
-    fields = ['rent_per_month','loan_interest']
+    fields = ['loan_interest']
     widgets = {
-        'rent_per_month': forms.NumberInput(attrs={'class': 'form-control','id':'name'}),
         'loan_interest': forms.NumberInput(attrs={'class': 'form-control','id':'address'}),
     }
 
@@ -38,9 +37,10 @@ class CropForm(forms.ModelForm):
 class UnitForm(forms.ModelForm):
   class Meta:
     model = Unit
-    fields = ['name']
+    fields = ['name','rent_per_month']
     widgets = {
         'name': forms.TextInput(attrs={'class': 'form-control','id':'name'}),
+        'rent_per_month': forms.NumberInput(attrs={'class': 'form-control','id':'relative_value'}),
 
     }
 class ConditionForm(forms.ModelForm):

@@ -7,7 +7,7 @@ from .forms import AddEntryForm
 
 @login_required(login_url="/")
 def all_entries_view(request):
-  entries = Entry.objects.all().order_by('-arrival_time','-departure_time')
+  entries = Entry.objects.all().order_by('-arrival_date','-departure_date')
   customers = Customer.objects.all()
   crops = Crop.objects.all()
   total_sacks = Entry.objects.aggregate(Sum('sacks'))['sacks__sum']
@@ -98,7 +98,7 @@ def disabled_inward_view(request,pk=None):
 
 @login_required(login_url='/')
 def pay_view(request,notification=None):
-  entries = Entry.objects.all().order_by('-arrival_time','-departure_time')
+  entries = Entry.objects.all().order_by('-arrival_date','-departure_date')
   customers = Customer.objects.all()
   crops = Crop.objects.all()
   # total_sacks = Entry.objects.aggregate(Sum('sacks'))['sacks__sum']
@@ -115,11 +115,22 @@ def pay_view(request,notification=None):
     'entries':entries,
     'customers':customers,
     'crops':crops,
+    'notification':notification,
     # 'total_sacks':total_sacks if total_sacks else 0, 
     # 'total_due_rent':total_due_rent,
     # 'total_due_interest':total_due_interest,
     # 'total_loan_given':(total_loan_given*loan_amount_percentage)//100 if total_loan_given else 0,
   })      
+
+
+@login_required(login_url='/')
+def payment_summary(request,pk):
+  entry = Entry.objects.get(pk=pk)
+  payment_history = PaymentHistory.objects.get(entry=entry)
+
+  return render(request,'entries/payment_summmary.html',{
+    'payment_summary':payment_summary,
+  })
 
 
 @login_required(login_url='/')
@@ -130,13 +141,28 @@ def pay_rent(request,pk):
     entry = Entry.objects.get(id=pk)
     entry.rent_paid += amount
     entry.save()
-    notification = "success "
-    print('works',entry,amount)
+    notification = "rent"
     PaymentHistory.objects.create(entry=entry,amount=amount,type=1)
   except Exception as e:
     notification = 'failed'
     print(str(e))
-  return redirect('pay_view')
+  return redirect('pay_view',notification=notification)
+
+@login_required(login_url='/')
+def pay_interest(request,pk):
+  try:
+    print(request.POST)
+    amount = int(request.POST.get('amount'))
+    entry = Entry.objects.get(id=pk)
+    entry.interest_paid += amount
+    entry.save()
+    notification = "interest"
+    print('works',entry,amount)
+    PaymentHistory.objects.create(entry=entry,amount=amount,type=2)
+  except Exception as e:
+    notification = 'failed'
+    print(str(e))
+  return redirect('pay_view',notification=notification)
 
 @login_required(login_url='/')
 def outward_view(request,pk):

@@ -12,7 +12,7 @@ class Customer(models.Model):
 
   contact_number = models.CharField(max_length=15)
   email = models.EmailField(unique=True,null=True,blank=True)
-  time = models.DateTimeField(auto_now=True)
+  time = models.DateTimeField(auto_now_add=True)
 
   def __str__(self):
     return f"{self.name}"

@@ -6,21 +6,21 @@ from .forms import SettingsForm
 from .models import *
 
 # Create your views here.
-@login_required(login_url="/")
-def settings_view(request):
-  settings = Setting.objects.first()
-  form = SettingsForm(instance=settings)
-  notification = None
-  if request.method == 'POST':
-    form = SettingsForm(data=request.POST,instance=settings)
-    if form.is_valid():
-      form.save()
-      notification = 'success'
-    else:
-      notification = 'failed'
+# @login_required(login_url="/")
+# def settings_view(request):
+#   settings = Setting.objects.first()
+#   form = SettingsForm(instance=settings)
+#   notification = None
+#   if request.method == 'POST':
+#     form = SettingsForm(data=request.POST,instance=settings)
+#     if form.is_valid():
+#       form.save()
+#       notification = 'success'
+#     else:
+#       notification = 'failed'
 
 
-  return render(request, 'settings.html',{'form':form,'notification':notification})
+#   return render(request, 'settings.html',{'form':form,'notification':notification})
 
 
 @login_required(login_url="/")
@@ -80,22 +80,22 @@ def unit_view(request,pk=None,notification=None):
   except:
     notification = 'Unit already exists'
   form = UnitForm(instance=unit)
-  units = Unit.objects.all()
+  units = Unit.objects.all().order_by('-rent_per_month')
   return render(request,'master/units.html',{
     'form':form,
     'unit':unit,
     'units':units,
     'notification':notification
   })
-@login_required(login_url="/")
-def delete_unit(request,pk):
-  try:
-    Unit.objects.get(id=pk).delete()
-    notification = "deleted"
-  except Exception as e:
-    notification = 'error'
+# @login_required(login_url="/")
+# def delete_unit(request,pk):
+#   try:
+#     Unit.objects.get(id=pk).delete()
+#     notification = "deleted"
+#   except Exception as e:
+#     notification = 'error'
 
-  return redirect("unit_view",notification=notification)
+#   return redirect("unit_view",notification=notification)
 
 
 @login_required(login_url="/")

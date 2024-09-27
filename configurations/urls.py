@@ -10,7 +10,7 @@ urlpatterns = [
   
   re_path(r'^units(?:/(?P<pk>\d+))?(?:/(?P<notification>[\w-]+))?/$', unit_view, name="unit_view"),
   # re_path(r'^units/update(?:/(?P<pk>\d+))?(?:/(?P<notification>[\w-]+))?/$', unit_view, name="unit_view"),
-  re_path(r'^units/delete(?:/(?P<pk>\d+))?/$', delete_unit, name="delete_unit"),
+  # re_path(r'^units/delete(?:/(?P<pk>\d+))?/$', delete_unit, name="delete_unit"),
   
   re_path(r'^conditions(?:/(?P<pk>\d+))?(?:/(?P<notification>[\w-]+))?/$', condition_view, name="condition_view"),
   # re_path(r'^conditions/update(?:/(?P<pk>\d+))?(?:/(?P<notification>[\w-]+))?/$', condition_view, name="condition_view"),
@@ -28,6 +28,6 @@ urlpatterns = [
   # re_path(r'^sections/update(?:/(?P<pk>\d+))?(?:/(?P<notification>[\w-]+))?/$', section_view, name="section_view"),
   re_path(r'^sections/delete(?:/(?P<pk>\d+))?/$', delete_section, name="delete_section"),
 
-  path('system/',settings_view,name="settings_view"),
+  # path('system/',settings_view,name="settings_view"),
 
 ]

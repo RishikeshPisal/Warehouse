@@ -148,13 +148,19 @@ Pay
                 <th>ग्राहकाचे नाव</th>
                 <th>मोबाईल नंबर</th>
                 <th>पीक</th>
-                <th>माल साठवणेसाठी दिनांक</th>
+                <th>साठवणेसाठी दिनांक</th>
+                <th>एकूण दिवस</th>
+                <th>वजन</th>
                 <th>पोती नग</th>
                 <th>एकूण भाडे </th>
                 <th>भाडे जमा</th>
                 <th>भाडे बाकी</th>
-                <th>क्रिया</th>
-                <th class="d-none">form</th>
+                <th>एकूण व्याज </th>
+                <th>व्याज जमा</th>
+                <th>व्याज बाकी</th>
+                <th>Action</th>
+                <th class="d-none">pay rent form</th>
+                <th class="d-none">pay interest form</th>
               </tr>
             </thead>
             <tbody>
@@ -165,13 +171,16 @@ Pay
                 <td>{{entry.customer.name}}</td>
                 <td>{{entry.customer.contact_number}}</td>
                 <td>{{entry.crop.name}}</td>
-                <td>{{entry.arrival_time|date:"d/m/Y"}}</td>
+                <td>{{entry.arrival_date|date:'d/m/Y'}}</td>
+                <td>{{entry.total_days}}</td>
+                <td>{{entry.weight}} {{entry.unit}}</td>
                 <td>{{entry.sacks}}</td>
                 <td>{{entry.get_total_rent}}</td>
-                <td class="text-center">
-                  {{entry.rent_paid}}
-                </td>
+                <td>{{entry.rent_paid}}</td>
                 <td>{{entry.get_due_rent}}</td>
+                <td>{{entry.get_total_interest}}</td>
+                <td>{{entry.interest_paid}}</td>
+                <td>{{entry.get_due_interest}}</td>
                 <td>
                   <button class="btn btn-primary py-1 w-100 mt-1" 
                     onclick="showSwal('pay-rent','{{entry.id}}')">
@@ -182,17 +191,20 @@ Pay
                     onclick="showSwal('pay-interest','{{entry.id}}')">
                     व्याज भरा
                   </button>
+                  <a href="{% url 'payment_summary' %}" class="btn btn-primary py-1 w-100 mt-1">
+                    माहिती  
+                  </a>
                   <!-- <a href="{% url 'disabled_inward_view' entry.id %}" class="btn btn-outline-primary py-1 w-100 mt-1">View</a> -->
                 </td>
                 <td class="d-none">
-                  <form action="{% url 'pay_rent' entry.id %}" method="post" id="{{entry.id}}">
+                  <form action="{% url 'pay_rent' entry.id %}" method="post" id="pay-rent-form-{{entry.id}}">
                     {% csrf_token %}
                     <div class="col-md-12">
                       <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">एकूण पोती</label>
+                        <label class="col-sm-3 col-form-label">एकूण वजन</label>
                         <div class="col-sm-9">
                           <!-- <input type="text" class="form-control"> -->
-                          <input type="number" class="form-control" disabled value="{{entry.sacks}}">
+                          <input type="text" class="form-control" disabled value="{{entry.weight}} {{entry.unit}}">
                         </div>
                       </div>
                     </div>
@@ -219,7 +231,48 @@ Pay
                         <label class="col-sm-3 col-form-label">जमा करा</label>
                         <div class="col-sm-9">
                           <!-- <input type="text" class="form-control"> -->
-                          <input type="number" class="form-control" id="pay-{{entry.id}}" name="amount"> 
+                          <input type="number" class="form-control" id="pay-rent-{{entry.id}}" name="amount"> 
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </td>
+                <td class="d-none">
+                  <form action="{% url 'pay_interest' entry.id %}" method="post" id="pay-interest-form-{{entry.id}}">
+                    {% csrf_token %}
+                    <div class="col-md-12">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">एकूण वजन</label>
+                        <div class="col-sm-9">
+                          <!-- <input type="text" class="form-control"> -->
+                          <input type="text" class="form-control" disabled value="{{entry.weight}} {{entry.unit}}">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">एकूण दिवस</label>
+                        <div class="col-sm-9">
+                          <!-- <input type="text" class="form-control"> -->
+                          <input type="number" class="form-control" disabled value="{{entry.total_days}}">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">एकूण व्याज</label>
+                        <div class="col-sm-9">
+                          <!-- <input type="text" class="form-control"> -->
+                          <input type="number" class="form-control" disabled id="total_interest-{{entry.id}}" value="{{entry.get_total_inteerst}}">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">जमा करा</label>
+                        <div class="col-sm-9">
+                          <!-- <input type="text" class="form-control"> -->
+                          <input type="number" class="form-control" id="pay-interest-{{entry.id}}" name="amount"> 
                         </div>
                       </div>
                     </div>
@@ -251,9 +304,13 @@ Pay
 <script src="{% static 'js/toastDemo.js' %}"></script>
 <script>
 </script>
-{% if notification == 'success' %}
+{% if notification == 'rent' %}
 <script>
-  showSuccessToast('Franchise Created') 
+  showSuccessToast('Rent Added!') 
+</script>
+{% elif notification == 'interest' %}
+<script>
+  showSuccessToast('Interest Added!') 
 </script>
 {% elif notification == 'failed' %}
 <script>
@@ -380,7 +437,7 @@ Pay
 
     }
     else if (type === 'pay-rent') {
-      const form = document.getElementById(id)
+      const form = document.getElementById(`pay-rent-form-${id}`)
       swal({
         content: {
           element: form,
@@ -409,7 +466,7 @@ Pay
         }
       })
 
-      const pay_input = document.getElementById(`pay-${id}`);
+      const pay_input = document.getElementById(`pay-rent-${id}`);
       const total_rent_input = document.getElementById(`total_rent-${id}`);
       var total_rent = total_rent_input.value
 
@@ -435,7 +492,64 @@ Pay
 
       })
     }
-     else if (type === 'withdrawal-request') {
+     
+    else if (type === 'pay-interest') {
+      const form = document.getElementById(`pay-interest-form-${id}`)
+      swal({
+        content: {
+          element: form,
+          attributes: {
+            placeholder: "Type your password",
+            type: "password",
+            class: 'form-control'
+          },
+        },
+        buttons: {
+          submit: {
+            text: "जमा करा",
+            value: false,
+            visible: true,
+            className: "btn btn-success",
+            loaderHtml: '',
+            closeModal: false,
+          },
+          cancel: {
+            text: "Cancel",
+            value: true,
+            visible: true,
+            className: "btn btn-danger",
+            closeModal: true  
+          }
+        }
+      })
+
+      const pay_interest_input = document.getElementById(`pay-interest-${id}`);
+      const total_interest_input = document.getElementById(`total_interest-${id}`);
+      var total_interest = total_interest_input.value
+
+      // Listen to the 'keyup' event on the pay input
+      pay_interest_input.addEventListener('keyup', function() {
+        // Get the values of pay and total rent
+        const pay_value = parseFloat(pay_interest_input.value) || 0;
+
+        // Calculate the remaining rent
+        const remaining_interest = total_interest - pay_value;
+
+        // Update the total rent input field with the new value
+        total_interest_input.value = remaining_interest >= 0 ? remaining_interest : 0;
+      });
+ 
+      document.getElementsByClassName('swal-button--submit')[0].addEventListener('click',()=>{
+        // remove the unnecessary loader
+        const loader = document.getElementsByClassName('swal-button__loader')[0]
+        if(loader) loader.remove()
+        console.log(form)
+        form.submit()
+
+      })
+    }
+     
+    else if (type === 'withdrawal-request') {
       if(form?.classList.contains('d-none'))
         form.classList.remove('d-none')
       swal({
