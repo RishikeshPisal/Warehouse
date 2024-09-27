@@ -76,10 +76,16 @@ class Entry(models.Model):
     return super().save(*args, **kwargs)
 
 
-class RentHistory(models.Model):
+class PaymentHistory(models.Model):
+  TYPE = (
+    (1,'Rent'),
+    (2,'Interest')
+  )
   entry = models.ForeignKey(Entry,on_delete=models.CASCADE)
   amount = models.IntegerField()
   time = models.DateTimeField(auto_now=True)
+  type = models.CharField(max_length=5,choices=TYPE)
+
 
 
 class Outward(models.Model):

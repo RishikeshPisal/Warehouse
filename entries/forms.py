@@ -56,10 +56,10 @@ class AddEntryForm(forms.ModelForm):
 
 
 
-class RentHistoryForm(forms.ModelForm):
-  class Meta:
-    model = RentHistory
-    fields = ['amount']
-    widgets = {
-        'amount': forms.NumberInput(attrs={'class': 'form-control','id':'amount'}),
-    }
+# class RentHistoryForm(forms.ModelForm):
+#   class Meta:
+#     model = RentHistory
+#     fields = ['amount']
+#     widgets = {
+#         'amount': forms.NumberInput(attrs={'class': 'form-control','id':'amount'}),
+#     }

@@ -97,7 +97,7 @@ def disabled_inward_view(request,pk=None):
     })
 
 @login_required(login_url='/')
-def pay_view(request):
+def pay_view(request,notification=None):
   entries = Entry.objects.all().order_by('-arrival_time','-departure_time')
   customers = Customer.objects.all()
   crops = Crop.objects.all()
@@ -125,17 +125,18 @@ def pay_view(request):
 @login_required(login_url='/')
 def pay_rent(request,pk):
   try:
+    print(request.POST)
     amount = int(request.POST.get('amount'))
     entry = Entry.objects.get(id=pk)
     entry.rent_paid += amount
-    # entry.save()
-    notification = "Rent Updated"
+    entry.save()
+    notification = "success "
     print('works',entry,amount)
-    # RentHistory.objects.create(entry=entry,amount=amount)
+    PaymentHistory.objects.create(entry=entry,amount=amount,type=1)
   except Exception as e:
-    notification = str(e)
-    print(notification)
-  return redirect('all_entries_view',notification=notification)
+    notification = 'failed'
+    print(str(e))
+  return redirect('pay_view')
 
 @login_required(login_url='/')
 def outward_view(request,pk):
@@ -144,8 +145,8 @@ def outward_view(request,pk):
     if request.method == 'POST':
       amount = int(request.POST.get('amount'))
       sacks = int(request.POST.get('sacks'))
-      rent_history = RentHistory.objects.create(entry=entry,amount=amount)
-      Outward.objects.create(rent_history=rent_history,sacks=sacks)
+      # rent_history = RentHistory.objects.create(entry=entry,amount=amount)
+      # Outward.objects.create(rent_history=rent_history,sacks=sacks)
       notification = 'success'
       return render('all_entries_view',notification=notification)
     else:

@@ -174,24 +174,25 @@ Pay
                 <td>{{entry.get_due_rent}}</td>
                 <td>
                   <button class="btn btn-primary py-1 w-100 mt-1" 
-                    onclick="showSwal('pay-rent','pay-rent-{{entry.id}}')">
+                    onclick="showSwal('pay-rent','{{entry.id}}')">
                     भाडे भरा 
                   </button>
                   <br>
                   <button class="btn btn-primary py-1 w-100 mt-1" 
-                    onclick="showSwal('pay-interest','pay-interest-{{entry.id}}')">
+                    onclick="showSwal('pay-interest','{{entry.id}}')">
                     व्याज भरा
                   </button>
                   <!-- <a href="{% url 'disabled_inward_view' entry.id %}" class="btn btn-outline-primary py-1 w-100 mt-1">View</a> -->
                 </td>
                 <td class="d-none">
                   <form action="{% url 'pay_rent' entry.id %}" method="post" id="{{entry.id}}">
+                    {% csrf_token %}
                     <div class="col-md-12">
                       <div class="form-group row">
                         <label class="col-sm-3 col-form-label">एकूण पोती</label>
                         <div class="col-sm-9">
                           <!-- <input type="text" class="form-control"> -->
-                          <input type="number" class="form-control" disabled id="total_sacks" value="{{entry.sacks}}">
+                          <input type="number" class="form-control" disabled value="{{entry.sacks}}">
                         </div>
                       </div>
                     </div>
@@ -200,7 +201,7 @@ Pay
                         <label class="col-sm-3 col-form-label">एकूण दिवस</label>
                         <div class="col-sm-9">
                           <!-- <input type="text" class="form-control"> -->
-                          <input type="number" class="form-control" disabled id="total_days" value="{{entry.total_days}}">
+                          <input type="number" class="form-control" disabled value="{{entry.total_days}}">
                         </div>
                       </div>
                     </div>
@@ -218,7 +219,7 @@ Pay
                         <label class="col-sm-3 col-form-label">जमा करा</label>
                         <div class="col-sm-9">
                           <!-- <input type="text" class="form-control"> -->
-                          <input type="number" class="form-control" name="" id="pay-{{entry.id}}" name="amount"> 
+                          <input type="number" class="form-control" id="pay-{{entry.id}}" name="amount"> 
                         </div>
                       </div>
                     </div>
@@ -379,9 +380,7 @@ Pay
 
     }
     else if (type === 'pay-rent') {
-      console.log('here',id)
       const form = document.getElementById(id)
-      console.log(form)
       swal({
         content: {
           element: form,
@@ -391,19 +390,29 @@ Pay
             class: 'form-control'
           },
         },
-        button: {
-          text: "जमा करा",
-          value: true,
-          visible: true,
-          className: "btn btn-primary"
+        buttons: {
+          submit: {
+            text: "जमा करा",
+            value: false,
+            visible: true,
+            className: "btn btn-success",
+            loaderHtml: '',
+            closeModal: false,
+          },
+          cancel: {
+            text: "Cancel",
+            value: true,
+            visible: true,
+            className: "btn btn-danger",
+            closeModal: true  
+          }
         }
       })
-      // function calculate_remaining_rent() {
-      // Get the input elements
+
       const pay_input = document.getElementById(`pay-${id}`);
       const total_rent_input = document.getElementById(`total_rent-${id}`);
-      console.log(`pay-${id}`,pay_input,total_rent_input)
       var total_rent = total_rent_input.value
+
       // Listen to the 'keyup' event on the pay input
       pay_input.addEventListener('keyup', function() {
         // Get the values of pay and total rent
@@ -416,12 +425,13 @@ Pay
         // Update the total rent input field with the new value
         total_rent_input.value = remaining_rent >= 0 ? remaining_rent : 0;
       });
-  // }
+ 
       document.getElementsByClassName('swal-button--submit')[0].addEventListener('click',()=>{
         // remove the unnecessary loader
         const loader = document.getElementsByClassName('swal-button__loader')[0]
         if(loader) loader.remove()
-          form.submit()
+        console.log(form)
+        form.submit()
 
       })
     }

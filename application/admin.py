@@ -9,7 +9,7 @@ for app_config in app_configs:
     # Loop through all models in each app
     for model_name, model in app_config.models.items():
         try:
-            if model_name in ['user','customer','entry','crop','unit','cropcondition','cropcategory','insurance','section','setting']:
+            if model_name in ['user','customer','entry','crop','unit','cropcondition','cropcategory','insurance','section','setting','payhistory']:
               # admin.site.register(model)
                 @admin.register(model)
                 class modelAdmin(admin.ModelAdmin):
