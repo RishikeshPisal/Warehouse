@@ -5,7 +5,7 @@ class Setting(models.Model):
   company_name = models.CharField(max_length=100,null=True)
   rent_per_month = models.IntegerField()
   min_months_for_rent = models.IntegerField(null=True)
-  load_amount_percentage = models.IntegerField()
+  loan_amount_percentage = models.IntegerField()
   loan_interest = models.DecimalField(decimal_places=2,max_digits=10)
 
 class Crop(models.Model):

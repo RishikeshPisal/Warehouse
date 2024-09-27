@@ -28,6 +28,7 @@ class Entry(models.Model):
   loan_interest = models.DecimalField(decimal_places=2,max_digits=10)
   loan_paid = models.IntegerField(default=0)
 
+  min_months = models.IntegerField()
   arrival_time = models.DateTimeField(auto_now=True)
   insurance_till = models.DateField()
   departure_time = models.DateTimeField(null=True,blank=True)
@@ -37,14 +38,13 @@ class Entry(models.Model):
     return f"{self.customer.name} - {self.crop.name}"
   
   def get_total_rent(self):
-    min_months = Setting.objects.first().min_months_for_rent
     if self.closed:
       days = (self.departure_time-self.arrival_time).days
     else:
       days = (datetime.now()-self.arrival_time).days
     return max(
       days*self.rent_per_month*self.sacks/30,
-      self.rent_per_month*min_months*self.sacks
+      self.rent_per_month*self.min_months*self.sacks
     )
 
   def get_due_rent(self):
@@ -56,13 +56,20 @@ class Entry(models.Model):
     return (total_amount*rate_of_interest)/100
   
   def get_due_interest(self):
-    return self.get_total_interest - self.loan_paid
+    return self.get_total_interest() - self.loan_paid
   
   def get_total_price(self):
     return self.price_per_unit*self.weight
 
+  def total_days(self):
+    if self.closed:
+      days = (self.departure_time-self.arrival_time).days
+    else:
+      days = (datetime.now()-self.arrival_time).days
+    return days
   def save(self, *args, **kwargs):
     if self.pk is None: # if the object is being created
+      self.min_months = Setting.objects.first().min_months_for_rent
       self.rent_per_month = Setting.objects.first().rent_per_month
       self.loan_interest = Setting.objects.first().loan_interest
     
@@ -72,4 +79,9 @@ class Entry(models.Model):
 class RentHistory(models.Model):
   entry = models.ForeignKey(Entry,on_delete=models.CASCADE)
   amount = models.IntegerField()
+  time = models.DateTimeField(auto_now=True)
 
+
+class Outward(models.Model):
+  rent_history = models.ForeignKey(Entry,on_delete=models.CASCADE)
+  sacks = models.IntegerField()

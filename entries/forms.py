@@ -1,4 +1,4 @@
-from .models import Entry
+from .models import *
 from customers.models import Customer
 from configurations.models import *
 from django import forms
@@ -53,3 +53,13 @@ class AddEntryForm(forms.ModelForm):
     queryset=Section.objects.all(),
     widget=forms.Select(attrs={'class': 'form-control py-3','id':'section'})
   )
+
+
+
+class RentHistoryForm(forms.ModelForm):
+  class Meta:
+    model = RentHistory
+    fields = ['amount']
+    widgets = {
+        'amount': forms.NumberInput(attrs={'class': 'form-control','id':'amount'}),
+    }

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}
-Add Entry
+View Entry
 {% endblock %}
 {% block specific_css %}
 <link rel="stylesheet" href="{% static 'vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}">
@@ -23,9 +23,9 @@ Add Entry
 
 <div class="card">
   <div class="card-body">
-    <h4 class="card-title">Add new Entry</h4>
+    <h4 class="card-title">आवक </h4>
     <form class="form-sample mt-4" enctype="multipart/form-data" method="post" id="sign_up_form"
-      action="{% url 'add_entry_view' %}">
+      action="#">
       {% csrf_token %}
       {{form.errors}}
       {{errors}}
@@ -47,10 +47,7 @@ Add Entry
             <label class="col-sm-3 col-form-label">मोबाईल नंबर</label>
             <div class="col-sm-9">
               <select class="form-control py-3" name="" id="contact_number_select" disabled>
-                <option value=""></option>
-                {% for customer in customers %}
-                  <option value="{{customer.id}}">{{customer.contact_number}}</option>
-                {% endfor %}
+                <option value="">{{entry.customer.contact_number}}</option>
               </select>
             </div>
           </div>
@@ -60,10 +57,7 @@ Add Entry
             <label class="col-sm-3 col-form-label">ईमेल</label>
             <div class="col-sm-9">
               <select class="form-control py-3" name="" id="email_select" disabled>
-                <option value=""></option>
-                {% for customer in customers %}
-                  <option value="{{customer.id}}">{{customer.email}}</option>
-                {% endfor %}
+                <option value="">{{entry.customer.email}}</option>
               </select>
             </div>
           </div>
@@ -73,10 +67,7 @@ Add Entry
             <label class="col-sm-3 col-form-label">तालुका</label>
             <div class="col-sm-9">
               <select class="form-control py-3" name="" id="taluka_select" disabled>
-                <option value=""></option>
-                {% for customer in customers %}
-                  <option value="{{customer.id}}">{{customer.taluka}}</option>
-                {% endfor %}
+                <option value="">{{entry.customer.taluka}}</option>
               </select>
             </div>
           </div>
@@ -86,10 +77,7 @@ Add Entry
             <label class="col-sm-3 col-form-label">जिल्हा</label>
             <div class="col-sm-9">
               <select class="form-control py-3" name="" id="zila_select" disabled>
-                <option value=""></option>
-                {% for customer in customers %}
-                  <option value="{{customer.id}}">{{customer.zila}}</option>
-                {% endfor %}
+                <option value="">{{entry.customer.zila}}</option>
               </select>
             </div>
           </div>
@@ -101,10 +89,10 @@ Add Entry
       <div class="row">
         <div class="col-md-6">
           <div class="form-group row">
-            <label class="col-sm-3 col-form-label">मालाचे वर्णन</label>
+            <label class="col-sm-3 col-form-label">मालाचे नाव</label>
             <div class="col-sm-9">
-              <!-- <input class="form-control" placeholder="dd/mm/yyyy"> -->
-              {{ form.crop }}
+              <input type="text" class="form-control" value="{{entry.crop.name}}">
+              <!-- {{ form.crop }} -->
             </div>
           </div>
         </div>
@@ -113,8 +101,8 @@ Add Entry
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">वर्ग किंवा प्रमाणित दर्जा किंवा वर्णन </label>
             <div class="col-sm-9">
-              <!-- <input type="text" class="form-control"> -->
-              {{ form.crop_category }}
+              <input type="text" class="form-control" value="{{entry.crop_category}}">
+              <!-- {{ form.crop_category }} -->
             </div>
           </div>
         </div>
@@ -122,7 +110,8 @@ Add Entry
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">स्तिथी </label>
             <div class="col-sm-9">
-              {{ form.crop_condition }}
+              <!-- {{ form.crop_condition }} -->
+              <input type="text" class="form-control" value="{{entry.crop_condition}}">
             </div>
           </div>
         </div>
@@ -138,7 +127,8 @@ Add Entry
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">एकक </label>
             <div class="col-sm-9">
-              {{ form.unit }}
+              <!-- {{ form.unit }} -->
+              <input type="text" class="form-control" value="{{entry.unit}}">
             </div>
           </div>
         </div>
@@ -165,7 +155,7 @@ Add Entry
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">किंमत </label>
             <div class="col-sm-9">
-              <input type="number" name="" id="total_price" class="form-control" disabled value="0">
+              <input type="number" name="" id="total_price" class="form-control" disabled value="{{total_price}}">
             </div>
           </div>
         </div>
@@ -175,7 +165,7 @@ Add Entry
               कर्जाची रक्कम ({{loan_amount_percentage}}%)</label>
             <div class="col-sm-9">
               <!-- <input type="text" class="form-control"> vyas dar -->
-              <input type="number" name="" id="loan_amount" class="form-control" disabled value="0">
+              <input type="number" name="" id="loan_amount" class="form-control" disabled value="{{loan_amount}}">
             </div>
           </div>
         </div>
@@ -183,8 +173,8 @@ Add Entry
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">चौक क्रमांक</label>
             <div class="col-sm-9">
-              <!-- <input type="text" class="form-control"> -->
-              {{ form.section }}
+              <input type="text" class="form-control" value="{{entry.section}}">
+              <!-- {{ form.section }} -->
             </div>
           </div>
         </div>
@@ -197,8 +187,8 @@ Add Entry
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">विमा कंपनी</label>
             <div class="col-sm-9">
-              <!-- <input type="text" class="form-control"> policiy no anugyapan karam -->
-              {{ form.insurance }}
+              <input type="text" class="form-control" value="{{entry.insurance.name}}">
+              <!-- {{ form.insurance }} -->
             </div>
           </div>
         </div>
@@ -222,7 +212,7 @@ Add Entry
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">सदर माल साठवणेसाठी दिनांक</label>
             <div class="col-sm-9">
-              <input type="date" class="form-control" value="{% now 'd/m/Y' %}">
+              <input type="date" class="form-control" value="{{enty.arrival_time|date:'d/m/Y'}}">
             </div>
           </div>
         </div>
@@ -262,7 +252,7 @@ Add Entry
       </div>
 
 
-      <button class="btn btn-primary" id="submit_button" type="submit">Create</button>
+      <!-- <button class="btn btn-primary" id="submit_button" type="submit">जोडा</button> -->
 
     </form>
   </div>
@@ -296,69 +286,10 @@ Add Entry
 </script>
 {% endif %}
 <script>
-// Wait until the DOM is fully loaded
-document.addEventListener("DOMContentLoaded", function () {
-  // Get references to the customer select field
-  const customerSelect = document.getElementById("customer");
 
-  // Get references to the other select fields
-  const contactNumberSelect = document.getElementById("contact_number_select");
-  const talukaSelect = document.getElementById("taluka_select");
-  const emailSelect = document.getElementById("email_select");
-  const zilaSelect = document.getElementById("zila_select");
-
-  // Add an event listener to the customer select field
-  customerSelect.addEventListener("change", function () {
-    // Get the selected customer's ID
-    const selectedCustomerId = customerSelect.value;
-
-    // Reset all select fields
-    contactNumberSelect.value = "";
-    talukaSelect.value = "";
-    emailSelect.value = "";
-    zilaSelect.value = "";
-
-    // Iterate through the options of each select field and update the selected value
-    Array.from(contactNumberSelect.options).forEach(option => {
-      if (option.value == selectedCustomerId) {
-        option.selected = true;
-      }
-    });
-
-    Array.from(talukaSelect.options).forEach(option => {
-      if (option.value == selectedCustomerId) {
-        option.selected = true;
-      }
-    });
-    Array.from(zilaSelect.options).forEach(option => {
-      if (option.value == selectedCustomerId) {
-        option.selected = true;
-      }
-    });
-
-    Array.from(emailSelect.options).forEach(option => {
-      if (option.value == selectedCustomerId) {
-        option.selected = true;
-      }
-    });
-
-
-  });
+$(document).ready(function () {
+  // Disable all input, textarea, and select fields
+  $("input, textarea, select").prop("disabled", true);
 });
-
-  function calculate_total_price(){
-    total_price = document.getElementById('total_price')
-    loan_amount = document.getElementById('loan_amount')
-    loan_amount_percentage = parseInt('{{loan_amount_percentage}}') // this is begin accessed from django template context
-    price_per_unit = parseInt(document.getElementById('price_per_unit').value)
-    weight = parseInt(document.getElementById('weight').value)
-    if (!isNaN(price_per_unit) && !isNaN(weight)){
-      total_price.classList.remove('d-none') 
-      total_price.value = price_per_unit*weight
-      loan_amount.value = (total_price.value*loan_amount_percentage)/100
-    }
-  }
-  document.getElementById('price_per_unit').onkeyup = calculate_total_price
-  document.getElementById('weight').onkeyup = calculate_total_price
 </script>
 {% endblock %}
