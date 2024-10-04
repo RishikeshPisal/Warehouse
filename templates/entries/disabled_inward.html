@@ -119,7 +119,7 @@ View Entry
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">पोती नग</label>
             <div class="col-sm-9">
-              {{ form.sacks }}
+              {{ form.initial_sacks }}
             </div>
           </div>
         </div>
@@ -212,7 +212,7 @@ View Entry
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">सदर माल साठवणेसाठी दिनांक</label>
             <div class="col-sm-9">
-              <input type="text" class="form-control" value="{{entry.arrival_time|date:'d/m/Y'}}">
+              <input type="text" class="form-control" value="{{entry.arrival_date|date:'d/m/Y'}}">
             </div>
           </div>
         </div>

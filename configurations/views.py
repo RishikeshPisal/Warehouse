@@ -37,9 +37,11 @@ def crop_view(request,pk=None,notification=None):
         notification = 'success'
       else:
         notification = form.errors.as_text()
-        print(form.errors)
-  except:
+        print('error',form.errors)
+  except Exception as e:
+    print(str(e))
     notification = 'Crop already exists'
+  # print('here')
   form = CropForm(instance=crop)
   crops = Crop.objects.filter(is_deleted=False)
   return render(request,'master/crops.html',{

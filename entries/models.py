@@ -2,7 +2,7 @@ from django.db import models
 from customers.models import Customer
 from configurations.models import *
 from datetime import datetime
-
+from math import floor
 class Entry(models.Model):
   customer = models.ForeignKey(Customer,on_delete=models.CASCADE)
   crop = models.ForeignKey(Crop,on_delete=models.CASCADE)
@@ -18,7 +18,10 @@ class Entry(models.Model):
   crop_category = models.CharField(max_length=25)
   section = models.CharField(max_length=25)
 
+  initial_sacks = models.IntegerField()
   sacks = models.IntegerField()
+  
+  initial_weight = models.IntegerField()
   weight = models.IntegerField()
   price_per_unit = models.IntegerField()
 
@@ -27,6 +30,7 @@ class Entry(models.Model):
   
   loan_interest = models.DecimalField(decimal_places=2,max_digits=10)
   interest_paid = models.IntegerField(default=0)
+  total_principle = models.IntegerField(default=0)
   principle_remaining = models.IntegerField()
 
   min_months = models.IntegerField()
@@ -41,8 +45,8 @@ class Entry(models.Model):
   def get_total_rent(self):
     days = self.total_days()
     return max(
-      days*self.rent_per_month*self.weight/30,
-      self.rent_per_month*self.min_months*self.weight
+      floor(days*self.rent_per_month*self.initial_weight/30),
+      self.rent_per_month*self.min_months*self.initial_weight
     )
 
   def get_due_rent(self):
@@ -50,14 +54,15 @@ class Entry(models.Model):
 
   def get_total_interest(self):
     days = self.total_days()
-    print(days,self.loan_interest,self.principle_remaining)
-    return (self.principle_remaining*self.loan_interest*days)/100
+    # print(days,self.loan_interest,self.principle_remaining)
+    return floor((self.principle_remaining*self.loan_interest*days)/100)
   
   def get_due_interest(self):
     return self.get_total_interest() - self.interest_paid
   
   def get_total_price(self):
     return self.price_per_unit*self.weight
+
 
   def total_days(self):
     if self.closed:
@@ -68,25 +73,34 @@ class Entry(models.Model):
   
   def save(self, *args, **kwargs):
     if self.pk is None: # if the object is being created
-      self.min_months = Setting.objects.first().min_months_for_rent
-      self.loan_interest = Setting.objects.first().loan_interest
+      setting = Setting.objects.first()
+      self.min_months = setting.min_months_for_rent
+      self.loan_interest = setting.loan_interest
       self.rent_per_month = self.unit.rent_per_month
-    
+      self.total_principle = (self.get_total_price()*setting.loan_amount_percentage)//100
+      self.sacks = self.initial_sacks
+      self.weight = self.initial_weight
+      self.principle_remaining = self.total_principle
     return super().save(*args, **kwargs)
 
 
 class PaymentHistory(models.Model):
   TYPE = (
     (1,'Rent'),
-    (2,'Interest')
+    (2,'Interest'),
+    (3,'Principle'),
+    (4,'All'),
   )
   entry = models.ForeignKey(Entry,on_delete=models.CASCADE)
-  amount = models.IntegerField()
+  rent = models.IntegerField(default=0)
+  interest = models.IntegerField(default=0)
+  principle = models.IntegerField(default=0)
   time = models.DateTimeField(auto_now_add=True)
   type = models.CharField(max_length=5,choices=TYPE)
 
 
 
 class Outward(models.Model):
-  rent_history = models.ForeignKey(Entry,on_delete=models.CASCADE)
-  sacks = models.IntegerField()
+  payment_history = models.ForeignKey(PaymentHistory,on_delete=models.CASCADE)
+  sacks = models.IntegerField(blank=True,null=True)
+  weight = models.IntegerField()

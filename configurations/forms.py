@@ -15,9 +15,10 @@ class SettingsForm(forms.ModelForm):
 class CropForm(forms.ModelForm):
   class Meta:
     model = Crop
-    fields = ['name']
+    fields = ['name', 'current_market_price']
     widgets = {
         'name': forms.TextInput(attrs={'class': 'form-control','id':'name'}),
+        'current_market_price': forms.NumberInput(attrs={'class': 'form-control','id':'current_market_price'}),
 
     }
 
@@ -31,6 +32,7 @@ class CropForm(forms.ModelForm):
         crop.save()
       else:
         raise Exception("Crop already exists ")
+    print('in form',name.title())
     return name.title()
 
 

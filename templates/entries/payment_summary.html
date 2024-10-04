@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}
-All Entries
+Payment Summary
 {% endblock %}
 {% block specific_css %}
 <link rel="stylesheet" href="{% static 'vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}">
@@ -21,7 +21,7 @@ All Entries
 
 
 
-<div class="row card-box">
+<!-- <div class="row card-box">
   <div class="col-lg-3 col-md-6 col-sm-12 card-container">
     <div class="card bg-soft-info outer-box">
       <div class="card-body">
@@ -96,7 +96,7 @@ All Entries
       </div>
     </div>
   </div>
-</div>
+</div> -->
 <div class="card mb-2 filter-card">
   <div class="card-body p-3 ">
     <!-- <div class="row p-2 col-lg-6 col-md-6 "> -->
@@ -118,26 +118,27 @@ All Entries
     <div class="d-flex align-items-center gap-1 ">
       <div class="">
         <select type="text" class="form-select form-select form-select-md data-dropdown" name="customer" id="customer">
-          <option value="">ग्राहक</option>
-          {% for customer in customers %}
-            <option value="{{customer.name}}">{{customer.name}}</option>
-          {% endfor %}
+          <option value="">Type</option>
+          <option value="rent">Rent</option>
+          <option value="interest">Interest</option>
+          <option value="principle">Principle</option>
+          
         </select>
       </div>
-      <div class="">
+      <!-- <div class="">
         <select type="text" class="form-select form-select form-select-md data-dropdown" name="crop" id="crop">
           <option value="">पीक</option>
           {% for crop in crops %}
             <option value="{{crop.name}}">{{crop.name}}</option>
           {% endfor %}
         </select>
-      </div>
+      </div> -->
     </div>
   </div>
 </div>
 <div class="card">
   <div class="card-body">
-    <h4 class="card-title">All Entries</h4>
+    <h4 class="card-title">Payment Summary</h4>
     <div class="row">
       <div class="col-12">
         <div class="table-responsive">
@@ -145,40 +146,21 @@ All Entries
             <thead>
               <tr>
                 <th>क्रमांक</th>
-                <th>ग्राहकाचे नाव</th>
-                <th>मोबाईल नंबर</th>
-                <th>पीक</th>
-                <th>साठवणेसाठी दिनांक</th>
-                <th>वजन</th>
-                <th>पोती नग</th>
-                <!-- <th>एकूण भाडे </th>
-                <th>भाडे जमा</th>
-                <th>भाडे बाकी</th> -->
-                <th>Action</th>
+                <th>Rent</th>
+                <th>Interest</th>
+                <th>Principle</th>
+                <th>दिनांक</th>
               </tr>
             </thead>
             <tbody>
 
-              {% for entry in entries %}
+              {% for ph in payment_history %}
               <tr>
-                <td>{{entry.id}}</td>
-                <td>{{entry.customer.name}}</td>
-                <td>{{entry.customer.contact_number}}</td>
-                <td>{{entry.crop.name}}</td>
-                <td>{{entry.arrival_date|date:"d/m/Y"}}</td>
-                <td>{{entry.initial_weight}} {{entry.unit}}</td>
-                <td>{{entry.initial_sacks}}</td>
-                <!-- <td>{{entry.get_total_rent}}</td>
-                <td class="text-center">
-                  {{entry.rent_paid}}
-                </td>
-                <td>{{entry.get_due_rent}}</td> -->
-                <td>
-                  <!-- <button class="btn btn-primary py-1 w-100 mt-1" onclick="showSwal('pay-rent')">भाडे भरा </button>
-                  <br>
-                  <button class="btn btn-primary py-1 w-100 mt-1">व्याज भरा</button> -->
-                  <a href="{% url 'disabled_inward_view' entry.id %}" class="btn btn-outline-primary py-1 w-100 mt-1">View</a>
-                </td>
+                <td>{{forloop.counter}}</td>
+                <td>{{ph.rent}}</td>
+                <td>{{ph.interest}}</td>
+                <td>{{ph.principle}}</td>
+                <td>{{ph.time|date:"d/m/Y"}}</td>
 
                 <!-- <td class="text-end">
                     <button class="btn btn-light">
@@ -191,10 +173,7 @@ All Entries
               </tr>
               {% endfor %}
             </tbody>
-          </table>
-          <form action="" method="post" class="d-none">
-            <!-- input -->
-          </form>
+          </table>  
         </div>
       </div>
     </div>

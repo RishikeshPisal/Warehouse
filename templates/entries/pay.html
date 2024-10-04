@@ -54,7 +54,7 @@ Pay
           </div>  
 
           <div class="text-end">
-            <h2 class="counter" style="visibility: visible;">{{total_sacks}}</h2>
+            <h2 class="counter" style="visibility: visible;">{{total_initial_sacks}}</h2>
             एकूण जमा पोती नग
           </div>
         </div>
@@ -173,8 +173,8 @@ Pay
                 <td>{{entry.crop.name}}</td>
                 <td>{{entry.arrival_date|date:'d/m/Y'}}</td>
                 <td>{{entry.total_days}}</td>
-                <td>{{entry.weight}} {{entry.unit}}</td>
-                <td>{{entry.sacks}}</td>
+                <td>{{entry.initial_weight}} {{entry.unit}}</td>
+                <td>{{entry.initial_sacks}}</td>
                 <td>{{entry.get_total_rent}}</td>
                 <td>{{entry.rent_paid}}</td>
                 <td>{{entry.get_due_rent}}</td>
@@ -191,7 +191,8 @@ Pay
                     onclick="showSwal('pay-interest','{{entry.id}}')">
                     व्याज भरा
                   </button>
-                  <a href="{% url 'payment_summary' %}" class="btn btn-primary py-1 w-100 mt-1">
+                  <br>
+                  <a href="{% url 'payment_summary' entry.id %}" class="btn btn-primary py-1 w-100 mt-1">
                     माहिती  
                   </a>
                   <!-- <a href="{% url 'disabled_inward_view' entry.id %}" class="btn btn-outline-primary py-1 w-100 mt-1">View</a> -->
@@ -204,7 +205,7 @@ Pay
                         <label class="col-sm-3 col-form-label">एकूण वजन</label>
                         <div class="col-sm-9">
                           <!-- <input type="text" class="form-control"> -->
-                          <input type="text" class="form-control" disabled value="{{entry.weight}} {{entry.unit}}">
+                          <input type="text" class="form-control" disabled value="{{entry.initial_weight}} {{entry.unit}}">
                         </div>
                       </div>
                     </div>
@@ -245,7 +246,7 @@ Pay
                         <label class="col-sm-3 col-form-label">एकूण वजन</label>
                         <div class="col-sm-9">
                           <!-- <input type="text" class="form-control"> -->
-                          <input type="text" class="form-control" disabled value="{{entry.weight}} {{entry.unit}}">
+                          <input type="text" class="form-control" disabled value="{{entry.initial_weight}} {{entry.unit}}">
                         </div>
                       </div>
                     </div>
@@ -643,16 +644,16 @@ Pay
   mobile no
   crop
   date_of_arrival
-  sacks
+  initial_sacks
   action (view details)
     (filled inward-form)
 
 
   pay (similar to inward) (button-> pay rent, pay interest, summary)
     summary(slip) -> date , 
-    popup(total sacks, total days, total rent/interest, pay(input) )
+    popup(total initial_sacks, total days, total rent/interest, pay(input) )
 
 
   outward-(similar inward)
-  table -> (action - view))-form(more field -sacks, principal_paid,proceed_button)
+  table -> (action - view))-form(more field -initial_sacks, principal_paid,proceed_button)
  -->

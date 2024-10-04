@@ -7,15 +7,15 @@ from django import forms
 class AddEntryForm(forms.ModelForm):
   class Meta:
     model = Entry
-    fields = ['customer','crop','sacks','weight',
+    fields = ['customer','crop','initial_sacks','initial_weight',
               'unit','crop_category','crop_condition',
               'price_per_unit','section','insurance_till',
               'policy_no','other_details',
               'vehicle_no','driver_name',]
     widgets = {
         'customer': forms.Select(attrs={'class': 'form-control form-control-lg','id':'customer'}),
-        'sacks': forms.NumberInput(attrs={'class': 'form-control','id':'sacks'}),
-        'weight': forms.NumberInput(attrs={'class': 'form-control','id':'weight'}),
+        'initial_sacks': forms.NumberInput(attrs={'class': 'form-control','id':'initial_sacks'}),
+        'initial_weight': forms.NumberInput(attrs={'class': 'form-control','id':'initial_weight'}),
         'price_per_unit': forms.NumberInput(attrs={'class': 'form-control','id':'price_per_unit'}),
         'insurance_till': forms.DateInput(attrs={'type':'date','class': 'form-control','id':'insurance_till'}),
         'vehicle_no': forms.TextInput(attrs={'class': 'form-control','id':'vehicle_no'}),

@@ -29,7 +29,7 @@ def logout_view(request):
 
 @login_required
 def home(request):
-    entries = Entry.objects.all().order_by('-arrival_time','-departure_time')
+    entries = Entry.objects.all().order_by('-arrival_date','-departure_date')
     print('here')
     return render(request,'dashboard.html',{'entries':entries})
 

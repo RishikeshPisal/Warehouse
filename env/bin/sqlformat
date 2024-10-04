@@ -1,4 +1,4 @@
-#!/home/jijai/Warehouse/env/bin/python3
+#!/home/ubuntu/Jijai/Warehouse/env/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

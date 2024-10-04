@@ -20,79 +20,64 @@ All entries
 {% block main_content %}
 
 
-
-<div class="card mb-2">
-  <div class="card-body">
-    <h4 class="card-title">नवीन माल टाका</h4>
-    {% if crop %}
-    <form class="form-sample mt-4" enctype="multipart/form-data" method="post" id="sign_up_form"
-      action="{% url 'crop_view' crop.id  %}">
-    {% else %}
-    <form class="form-sample mt-4" enctype="multipart/form-data" method="post" id="sign_up_form"
-      action="{% url 'crop_view'  %}">
-    {% endif %}
-      {% csrf_token %}
-      {{form.errors}}
-      {{errors}}
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form-group row">
-            <label class="col-sm-3 col-form-label">मालाचे नाव</label>
-            <div class="col-sm-9">
-              <input type="text" class="form-control">
-            </div>
-          </div>
-        </div>
-      </div>
-      <button class="btn btn-primary" id="submit_button" type="submit">
-        {% if crop %}
-          अपडेट
-        {% else %}
-          टाका
-        {% endif %}
-      </button>
-    </form>
-  </div>
-</div>
 <div class="card">
   <div class="card-body">
-    <h4 class="card-title">सर्व मालाचे वर्णन</h4>
+    <h4 class="card-title">All Entries</h4>
     <div class="row">
       <div class="col-12">
         <div class="table-responsive">
-          <table id="order-listing" class="table order-listing">
+          <table id="order-listing" class="table table-bordered">
             <thead>
               <tr>
                 <th>क्रमांक</th>
-                <th>नाव</th>
+                <th>ग्राहकाचे नाव</th>
+                <th>मोबाईल नंबर</th>
+                <th>पीक</th>
+                <th>साठवणेसाठी दिनांक</th>
+                <th>एकूण दिवस</th>
+                <th>वजन</th>
+                <th>पोती नग</th>
+                <th>एकूण भाडे </th>
+                <th>भाडे जमा</th>
+                <th>भाडे बाकी</th>
+                <th>एकूण व्याज </th>
+                <th>व्याज जमा</th>
+                <th>व्याज बाकी</th>
                 <th>Action</th>
               </tr>
             </thead>
             <tbody>
-              {% for crop in crops %}
+              {% for entry in entries %}
               <tr>
-                <td>{{ forloop.counter }}</td>
-                <td>{{ crop.name }}</td>
-                <td class="text-left">
-                  <div class="dropdown">
-                    <button type="button" class="btn btn-info dropdown-toggle" id="dropdownMenuIconButton1" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding:0.5rem 1rem">
-                      <i class="typcn typcn-user"></i>
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuIconButton1">
-                      <a class="dropdown-item" href="{% url 'crop_view' crop.id %}">अपडेट</a>
-                      <a class="dropdown-item" href="{% url 'delete_crop' crop.id %}">डिलीट</a>
-                    </div>
-                  </div>
+                <td>{{entry.id}}</td>
+                <td>{{entry.customer.name}}</td>
+                <td>{{entry.customer.contact_number}}</td>
+                <td>{{entry.crop.name}}</td>
+                <td>{{entry.arrival_date|date:'d/m/Y'}}</td>
+                <td>{{entry.total_days}}</td>
+                <td>{{entry.weight}} {{entry.unit}}</td>
+                <td>{{entry.initial_sacks}}</td>
+                <td>{{entry.get_total_rent}}</td>
+                <td>{{entry.rent_paid}}</td>
+                <td>{{entry.get_due_rent}}</td>
+                <td>{{entry.get_total_interest}}</td>
+                <td>{{entry.interest_paid}}</td>
+                <td>{{entry.get_due_interest}}</td>
+                <td>
+                  <a href="{% url 'outward_entry_view' entry.id %}" class="btn btn-primary py-1 w-100 mt-1">
+                    View  
+                  </a>
+                  <!-- <a href="{% url 'disabled_inward_view' entry.id %}" class="btn btn-outline-primary py-1 w-100 mt-1">View</a> -->
                 </td>
               </tr>
               {% endfor %}
-
             </tbody>
           </table>
         </div>
       </div>
     </div>
   </div>
+
 </div>
 
 {% endblock %}

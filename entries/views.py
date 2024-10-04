@@ -10,21 +10,21 @@ def all_entries_view(request):
   entries = Entry.objects.all().order_by('-arrival_date','-departure_date')
   customers = Customer.objects.all()
   crops = Crop.objects.all()
-  total_sacks = Entry.objects.aggregate(Sum('sacks'))['sacks__sum']
+  total_initial_sacks = Entry.objects.aggregate(Sum('initial_sacks'))['initial_sacks__sum']
   loan_amount_percentage = Setting.objects.first().loan_amount_percentage
   total_due_rent = sum((entry.get_due_rent() for entry in entries))
   total_due_interest = sum((entry.get_due_interest() for entry in entries))
   entries = entries.filter(closed=False)
 
   total_loan_given = Entry.objects.aggregate(
-    total_loan=Sum(F('weight')*F('price_per_unit'))
+    total_loan=Sum(F('initial_weight')*F('price_per_unit'))
   )['total_loan']
   # print(total_loan_given)
   return render(request, 'entries/all_entries.html',{
     'entries':entries,
     'customers':customers,
     'crops':crops,
-    'total_sacks':total_sacks if total_sacks else 0, 
+    'total_initial_sacks':total_initial_sacks if total_initial_sacks else 0, 
     'total_due_rent':total_due_rent,
     'total_due_interest':total_due_interest,
     'total_loan_given':(total_loan_given*loan_amount_percentage)//100 if total_loan_given else 0,
@@ -81,7 +81,7 @@ def disabled_inward_view(request,pk=None):
     loan_amount_percentage = Setting.objects.first().loan_amount_percentage
     notification = None
     form = AddEntryForm(instance=entry)
-    total_price = entry.weight*entry.price_per_unit
+    total_price = entry.initial_weight*entry.price_per_unit
     loan_amount = (total_price*loan_amount_percentage)//100
     
 
@@ -101,14 +101,14 @@ def pay_view(request,notification=None):
   entries = Entry.objects.all().order_by('-arrival_date','-departure_date')
   customers = Customer.objects.all()
   crops = Crop.objects.all()
-  # total_sacks = Entry.objects.aggregate(Sum('sacks'))['sacks__sum']
+  # total_initial_sacks = Entry.objects.aggregate(Sum('initial_sacks'))['initial_sacks__sum']
   # loan_amount_percentage = Setting.objects.first().loan_amount_percentage
   # total_due_rent = sum((entry.get_due_rent() for entry in entries))
   # total_due_interest = sum((entry.get_due_interest() for entry in entries))
   entries = entries.filter(closed=False)
 
   # total_loan_given = Entry.objects.aggregate(
-  #   total_loan=Sum(F('weight')*F('price_per_unit'))
+  #   total_loan=Sum(F('initial_weig')*F('price_per_unit'))
   # )['total_loan']
 
   return render(request, 'entries/pay.html',{
@@ -116,7 +116,7 @@ def pay_view(request,notification=None):
     'customers':customers,
     'crops':crops,
     'notification':notification,
-    # 'total_sacks':total_sacks if total_sacks else 0, 
+    # 'total_initial_sacks':total_initial_sacks if total_initial_sacks else 0, 
     # 'total_due_rent':total_due_rent,
     # 'total_due_interest':total_due_interest,
     # 'total_loan_given':(total_loan_given*loan_amount_percentage)//100 if total_loan_given else 0,
@@ -126,10 +126,10 @@ def pay_view(request,notification=None):
 @login_required(login_url='/')
 def payment_summary(request,pk):
   entry = Entry.objects.get(pk=pk)
-  payment_history = PaymentHistory.objects.get(entry=entry)
-
-  return render(request,'entries/payment_summmary.html',{
-    'payment_summary':payment_summary,
+  payment_history = PaymentHistory.objects.filter(entry=entry)
+  
+  return render(request,'entries/payment_summary.html',{
+    'payment_history':payment_history,
   })
 
 
@@ -142,7 +142,7 @@ def pay_rent(request,pk):
     entry.rent_paid += amount
     entry.save()
     notification = "rent"
-    PaymentHistory.objects.create(entry=entry,amount=amount,type=1)
+    PaymentHistory.objects.create(entry=entry,rent=amount,type=1)
   except Exception as e:
     notification = 'failed'
     print(str(e))
@@ -158,27 +158,55 @@ def pay_interest(request,pk):
     entry.save()
     notification = "interest"
     print('works',entry,amount)
-    PaymentHistory.objects.create(entry=entry,amount=amount,type=2)
+    PaymentHistory.objects.create(entry=entry,interest=amount,type=2)
   except Exception as e:
     notification = 'failed'
     print(str(e))
   return redirect('pay_view',notification=notification)
 
+
+
 @login_required(login_url='/')
-def outward_view(request,pk):
+def outward_view(request,notification=None):
+  entries = Entry.objects.filter(closed=False)
+  return render(request, 'entries/outward.html',{
+    'entries':entries,
+    'notification':notification,
+  })
+
+@login_required(login_url='/')
+def outward_entry_view(request,pk):
   try:
     entry = Entry.objects.get(pk=pk)
+    loan_amount_percentage = Setting.objects.first().loan_amount_percentage
+    print(entry.insurance.name)
     if request.method == 'POST':
-      amount = int(request.POST.get('amount'))
-      sacks = int(request.POST.get('sacks'))
-      # rent_history = RentHistory.objects.create(entry=entry,amount=amount)
-      # Outward.objects.create(rent_history=rent_history,sacks=sacks)
+      # amount = int(request.POST.get('amount'))
+      sacks = request.POST.get('sacks')
+      weight = request.POST.get('weight')
+      rent = request.POST.get('rent')
+      interest = request.POST.get('interest')
+      principle = request.POST.get('principle')
+      entry.rent_paid -= int(rent) if rent else 0
+      entry.interest_paid -= int(interest) if interest else 0
+      entry.principle_remaining -= int(principle) if principle else 0
+      payment_history = PaymentHistory.objects.create(
+        entry=entry,
+        rent=rent if rent else 0,
+        interest=interest if interest else 0,
+        principle=principle if principle else 0,
+        type=4
+      )
+      Outward.objects.create(payment_history=payment_history,sacks=sacks,weight=weight)
       notification = 'success'
-      return render('all_entries_view',notification=notification)
+      return redirect('outward_view',notification=notification)
     else:
       notification = None
   except Exception as e:
     notification = str(e)
-  return render(request,'entries/outward.html',{
-    'notification':notification
+  return render(request,'entries/outward_entry.html',{
+    'entry':entry,
+    'notification':notification,
+    'total_price':entry.initial_weight*entry.price_per_unit,
+    'loan_amount_percentage':loan_amount_percentage,
   })
