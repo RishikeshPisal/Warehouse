@@ -33,6 +33,8 @@ class Entry(models.Model):
   total_principle = models.IntegerField(default=0)
   principle_remaining = models.IntegerField()
 
+  miscellaneous_charges = models.IntegerField(default=0)
+
   min_months = models.IntegerField()
   arrival_date = models.DateField(auto_now_add=True)
   insurance_till = models.DateField()

@@ -187,9 +187,18 @@ def outward_entry_view(request,pk):
       rent = request.POST.get('rent')
       interest = request.POST.get('interest')
       principle = request.POST.get('principle')
+      miscellaneous_charges = request.POST.get('miscellaneous')
+
+      entry.weight -= int(weight) if weight else 0
+      entry.sacks -= int(sacks) if sacks else 0
       entry.rent_paid -= int(rent) if rent else 0
       entry.interest_paid -= int(interest) if interest else 0
       entry.principle_remaining -= int(principle) if principle else 0
+      entry.miscellaneous_charges -= int(miscellaneous_charges) if miscellaneous_charges else 0
+      if entry.weight == 0:
+        entry.closed = True
+      entry.save()
+      
       payment_history = PaymentHistory.objects.create(
         entry=entry,
         rent=rent if rent else 0,
