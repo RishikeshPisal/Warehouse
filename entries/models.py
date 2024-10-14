@@ -79,9 +79,9 @@ class Entry(models.Model):
       self.min_months = setting.min_months_for_rent
       self.loan_interest = setting.loan_interest
       self.rent_per_month = self.unit.rent_per_month
+      self.weight = self.initial_weight
       self.total_principle = (self.get_total_price()*setting.loan_amount_percentage)//100
       self.sacks = self.initial_sacks
-      self.weight = self.initial_weight
       self.principle_remaining = self.total_principle
     return super().save(*args, **kwargs)
 
