@@ -179,7 +179,7 @@ def outward_entry_view(request,pk):
   try:
     entry = Entry.objects.get(pk=pk)
     loan_amount_percentage = Setting.objects.first().loan_amount_percentage
-    print(entry.insurance.name)
+    # print(entry.insurance.name)
     if request.method == 'POST':
       # amount = int(request.POST.get('amount'))
       sacks = request.POST.get('sacks')
@@ -219,3 +219,5 @@ def outward_entry_view(request,pk):
     'total_price':entry.initial_weight*entry.price_per_unit,
     'loan_amount_percentage':loan_amount_percentage,
   })
+
+
