@@ -7,9 +7,9 @@ from .models import *
 class SettingsForm(forms.ModelForm):
   class Meta:
     model = Setting
-    fields = ['loan_interest']
+    fields = ['loan_interest_percentage']
     widgets = {
-        'loan_interest': forms.NumberInput(attrs={'class': 'form-control','id':'address'}),
+        'loan_interest_percentage': forms.NumberInput(attrs={'class': 'form-control','id':'address'}),
     }
 
 class CropForm(forms.ModelForm):

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}
-Out Ward
+OutWard
 {% endblock %}
 {% block specific_css %}
 <link rel="stylesheet" href="{% static 'vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}">
@@ -349,6 +349,15 @@ Out Ward
             <label class="col-sm-3 col-form-label">Miscellaenous Charges</label>
             <div class="col-sm-9">
               <input type="number" class="form-control" name="miscellaneous">
+              <!-- {{ form.driver_name }} -->
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Femication Charges</label>
+            <div class="col-sm-9">
+              <input type="number" class="form-control" name="femication">
               <!-- {{ form.driver_name }} -->
             </div>
           </div>

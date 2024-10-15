@@ -3,13 +3,13 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, F
 from .models import *
 from .forms import AddEntryForm
-# Create your views here.
+from dateutil.relativedelta import relativedelta
 
 @login_required(login_url="/")
 def all_entries_view(request):
   entries = Entry.objects.all().order_by('-arrival_date','-departure_date')
   customers = Customer.objects.all()
-  crops = Crop.objects.all()
+  crops = Crop.objects.all()  
   total_initial_sacks = Entry.objects.aggregate(Sum('initial_sacks'))['initial_sacks__sum']
   loan_amount_percentage = Setting.objects.first().loan_amount_percentage
   total_due_rent = sum((entry.get_due_rent() for entry in entries))
@@ -34,7 +34,9 @@ def all_entries_view(request):
 def inward_view(request,notification=None):
   form = AddEntryForm()
   loan_amount_percentage = None
+  one_year_later = datetime.today() + relativedelta(years=1)
   customers = Customer.objects.all()
+  insurances = Insurance.objects.all()
   try:
     loan_amount_percentage = Setting.objects.first().loan_amount_percentage
     if request.method == 'POST':
@@ -52,6 +54,8 @@ def inward_view(request,notification=None):
     'form':form,
     'notification':notification,
     'customers':customers,
+    'insurances':insurances,
+    'one_year_later':one_year_later,
     'loan_amount_percentage':loan_amount_percentage,
   })
 
@@ -151,14 +155,25 @@ def pay_rent(request,pk):
 @login_required(login_url='/')
 def pay_interest(request,pk):
   try:
-    print(request.POST)
     amount = int(request.POST.get('amount'))
     entry = Entry.objects.get(id=pk)
     entry.interest_paid += amount
     entry.save()
     notification = "interest"
-    print('works',entry,amount)
     PaymentHistory.objects.create(entry=entry,interest=amount,type=2)
+  except Exception as e:
+    notification = 'failed'
+    print(str(e))
+  return redirect('pay_view',notification=notification)
+@login_required(login_url='/')
+def pay_principle(request,pk):
+  try:
+    amount = int(request.POST.get('amount'))
+    entry = Entry.objects.get(id=pk)
+    entry.principle_remaining -= amount
+    entry.save()
+    notification = "principle"
+    PaymentHistory.objects.create(entry=entry,principle=amount,type=3)
   except Exception as e:
     notification = 'failed'
     print(str(e))
@@ -188,13 +203,15 @@ def outward_entry_view(request,pk):
       interest = request.POST.get('interest')
       principle = request.POST.get('principle')
       miscellaneous_charges = request.POST.get('miscellaneous')
+      femication_charges = request.POST.get('femication')
 
       entry.weight -= int(weight) if weight else 0
       entry.sacks -= int(sacks) if sacks else 0
-      entry.rent_paid -= int(rent) if rent else 0
+      entry.rent_paid += int(rent) if rent else 0
       entry.interest_paid -= int(interest) if interest else 0
       entry.principle_remaining -= int(principle) if principle else 0
-      entry.miscellaneous_charges -= int(miscellaneous_charges) if miscellaneous_charges else 0
+      entry.miscellaneous_charges += int(miscellaneous_charges) if miscellaneous_charges else 0
+      entry.femication_charges += int(femication_charges) if femication_charges else 0
       if entry.weight == 0:
         entry.closed = True
       entry.save()

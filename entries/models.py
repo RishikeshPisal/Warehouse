@@ -9,8 +9,7 @@ class Entry(models.Model):
   insurance = models.ForeignKey(Insurance,on_delete=models.SET_NULL,null=True)
   unit = models.ForeignKey(Unit,on_delete=models.PROTECT,null=True)
   
-  policy_no = models.CharField(max_length=50)
-  other_details = models.CharField(max_length=150)
+  other_details = models.CharField(max_length=150,null=True,blank=True)
   vehicle_no = models.CharField(max_length=50)
   driver_name = models.CharField(max_length=100)
   # not using foreign key to avoid loosing data on deletion
@@ -28,12 +27,13 @@ class Entry(models.Model):
   rent_per_month = models.DecimalField(max_digits=10,decimal_places=3)
   rent_paid = models.IntegerField(default=0)
   
-  loan_interest = models.DecimalField(decimal_places=2,max_digits=10)
+  loan_interest_percentage = models.DecimalField(decimal_places=2,max_digits=10)
   interest_paid = models.IntegerField(default=0)
   total_principle = models.IntegerField(default=0)
   principle_remaining = models.IntegerField()
 
   miscellaneous_charges = models.IntegerField(default=0)
+  femication_charges = models.IntegerField(default=0)
 
   min_months = models.IntegerField()
   arrival_date = models.DateField(auto_now_add=True)
@@ -56,8 +56,13 @@ class Entry(models.Model):
 
   def get_total_interest(self):
     days = self.total_days()
-    # print(days,self.loan_interest,self.principle_remaining)
-    return floor((self.principle_remaining*self.loan_interest*days)/100)
+    # print(days,self.loan_interest_percentage,self.principle_remaining)
+    days = self.total_days()
+    return max(
+      floor((self.principle_remaining*self.loan_interest_percentage*days/30)/100),
+      self.rent_per_month*self.min_months*self.initial_weight
+    )
+    return floor((self.principle_remaining*self.loan_interest_percentage*days)/100)
   
   def get_due_interest(self):
     return self.get_total_interest() - self.interest_paid
@@ -77,12 +82,13 @@ class Entry(models.Model):
     if self.pk is None: # if the object is being created
       setting = Setting.objects.first()
       self.min_months = setting.min_months_for_rent
-      self.loan_interest = setting.loan_interest
+      self.loan_interest_percentage = setting.loan_interest_percentage
       self.rent_per_month = self.unit.rent_per_month
       self.weight = self.initial_weight
-      self.total_principle = (self.get_total_price()*setting.loan_amount_percentage)//100
       self.sacks = self.initial_sacks
+      self.total_principle = (self.get_total_price()*setting.loan_amount_percentage)//100
       self.principle_remaining = self.total_principle
+      print('insurance',self.insurance)
     return super().save(*args, **kwargs)
 
 

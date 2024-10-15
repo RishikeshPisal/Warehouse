@@ -152,6 +152,8 @@ Pay
                 <th>एकूण दिवस</th>
                 <th>वजन</th>
                 <th>पोती नग</th>
+                <th>एकूण मुद्दल </th>
+                <th>मुद्दल बाकी</th>
                 <th>एकूण भाडे </th>
                 <th>भाडे जमा</th>
                 <th>भाडे बाकी</th>
@@ -161,6 +163,7 @@ Pay
                 <th>Action</th>
                 <th class="d-none">pay rent form</th>
                 <th class="d-none">pay interest form</th>
+                <th class="d-none">pay principle form</th>
               </tr>
             </thead>
             <tbody>
@@ -175,6 +178,8 @@ Pay
                 <td>{{entry.total_days}}</td>
                 <td>{{entry.initial_weight}} {{entry.unit}}</td>
                 <td>{{entry.initial_sacks}}</td>
+                <td>{{entry.total_principle}}</td>
+                <td>{{entry.principle_remaining}}</td>
                 <td>{{entry.get_total_rent}}</td>
                 <td>{{entry.rent_paid}}</td>
                 <td>{{entry.get_due_rent}}</td>
@@ -190,6 +195,11 @@ Pay
                   <button class="btn btn-primary py-1 w-100 mt-1" 
                     onclick="showSwal('pay-interest','{{entry.id}}')">
                     व्याज भरा
+                  </button>
+                  <br>
+                  <button class="btn btn-primary py-1 w-100 mt-1" 
+                    onclick="showSwal('pay-principle','{{entry.id}}')">
+                    मुद्दल  भरा
                   </button>
                   <br>
                   <a href="{% url 'payment_summary' entry.id %}" class="btn btn-primary py-1 w-100 mt-1">
@@ -264,7 +274,7 @@ Pay
                         <label class="col-sm-3 col-form-label">एकूण व्याज</label>
                         <div class="col-sm-9">
                           <!-- <input type="text" class="form-control"> -->
-                          <input type="number" class="form-control" disabled id="total_interest-{{entry.id}}" value="{{entry.get_total_inteerst}}">
+                          <input type="number" class="form-control" disabled id="total_interest-{{entry.id}}" value="{{entry.get_total_interest}}">
                         </div>
                       </div>
                     </div>
@@ -274,6 +284,47 @@ Pay
                         <div class="col-sm-9">
                           <!-- <input type="text" class="form-control"> -->
                           <input type="number" class="form-control" id="pay-interest-{{entry.id}}" name="amount"> 
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </td>
+                <td class="d-none">
+                  <form action="{% url 'pay_principle' entry.id %}" method="post" id="pay-principle-form-{{entry.id}}">
+                    {% csrf_token %}
+                    <div class="col-md-12">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">एकूण वजन</label>
+                        <div class="col-sm-9">
+                          <!-- <input type="text" class="form-control"> -->
+                          <input type="text" class="form-control" disabled value="{{entry.initial_weight}} {{entry.unit}}">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">एकूण दिवस</label>
+                        <div class="col-sm-9">
+                          <!-- <input type="text" class="form-control"> -->
+                          <input type="number" class="form-control" disabled value="{{entry.total_days}}">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">मुद्दल बाकी </label>
+                        <div class="col-sm-9">
+                          <!-- <input type="text" class="form-control"> -->
+                          <input type="number" class="form-control" disabled id="total_principle-{{entry.id}}" value="{{entry.principle_remaining}}">
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-12">
+                      <div class="form-group row">
+                        <label class="col-sm-3 col-form-label">जमा करा</label>
+                        <div class="col-sm-9">
+                          <!-- <input type="text" class="form-control"> -->
+                          <input type="number" class="form-control" id="pay-principle-{{entry.id}}" name="amount"> 
                         </div>
                       </div>
                     </div>
@@ -312,6 +363,10 @@ Pay
 {% elif notification == 'interest' %}
 <script>
   showSuccessToast('Interest Added!') 
+</script>
+{% elif notification == 'principle' %}
+<script>
+  showSuccessToast('Principle Added!') 
 </script>
 {% elif notification == 'failed' %}
 <script>
@@ -538,6 +593,60 @@ Pay
 
         // Update the total rent input field with the new value
         total_interest_input.value = remaining_interest >= 0 ? remaining_interest : 0;
+      });
+ 
+      document.getElementsByClassName('swal-button--submit')[0].addEventListener('click',()=>{
+        // remove the unnecessary loader
+        const loader = document.getElementsByClassName('swal-button__loader')[0]
+        if(loader) loader.remove()
+        form.submit()
+
+      })
+    }
+    else if (type === 'pay-principle') {
+      const form = document.getElementById(`pay-principle-form-${id}`)
+      swal({
+        content: {
+          element: form,
+          attributes: {
+            placeholder: "Type your password",
+            type: "password",
+            class: 'form-control'
+          },
+        },
+        buttons: {
+          submit: {
+            text: "जमा करा",
+            value: false,
+            visible: true,
+            className: "btn btn-success",
+            loaderHtml: '',
+            closeModal: false,
+          },
+          cancel: {
+            text: "Cancel",
+            value: true,
+            visible: true,
+            className: "btn btn-danger",
+            closeModal: true  
+          }
+        }
+      })
+
+      const pay_principle_input = document.getElementById(`pay-principle-${id}`);
+      const total_principle_input = document.getElementById(`total_principle-${id}`);
+      var total_principle = total_principle_input.value
+
+      // Listen to the 'keyup' event on the pay input
+      pay_principle_input.addEventListener('keyup', function() {
+        // Get the values of pay and total rent
+        const pay_value = parseFloat(pay_principle_input.value) || 0;
+
+        // Calculate the remaining rent
+        const remaining_principle = total_principle - pay_value;
+
+        // Update the total rent input field with the new value
+        total_principle_input.value = remaining_principle >= 0 ? remaining_principle : 0;
       });
  
       document.getElementsByClassName('swal-button--submit')[0].addEventListener('click',()=>{

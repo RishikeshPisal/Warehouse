@@ -10,8 +10,8 @@ class AddEntryForm(forms.ModelForm):
     fields = ['customer','crop','initial_sacks','initial_weight',
               'unit','crop_category','crop_condition',
               'price_per_unit','section','insurance_till',
-              'policy_no','other_details',
-              'vehicle_no','driver_name',]
+              'other_details','vehicle_no','driver_name',
+            ]
     widgets = {
         'customer': forms.Select(attrs={'class': 'form-control form-control-lg','id':'customer'}),
         'initial_sacks': forms.NumberInput(attrs={'class': 'form-control','id':'initial_sacks'}),
@@ -20,7 +20,6 @@ class AddEntryForm(forms.ModelForm):
         'insurance_till': forms.DateInput(attrs={'type':'date','class': 'form-control','id':'insurance_till'}),
         'vehicle_no': forms.TextInput(attrs={'class': 'form-control','id':'vehicle_no'}),
         'driver_name': forms.TextInput(attrs={'class': 'form-control','id':'driver_name'}),
-        'policy_no': forms.TextInput(attrs={'class': 'form-control','id':'policy_no'}),
         'other_details': forms.TextInput(attrs={'class': 'form-control','id':'other_details'}),
     }
   unit = forms.ModelChoiceField(

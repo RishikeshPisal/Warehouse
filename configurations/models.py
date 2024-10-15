@@ -5,7 +5,7 @@ class Setting(models.Model):
   company_name = models.CharField(max_length=100,null=True)
   min_months_for_rent = models.IntegerField(null=True)
   loan_amount_percentage = models.IntegerField()
-  loan_interest = models.DecimalField(decimal_places=2,max_digits=10)
+  loan_interest_percentage = models.DecimalField(decimal_places=2,max_digits=10)
 
 class Crop(models.Model):
   name = models.CharField(max_length=255,unique=True)
@@ -54,6 +54,7 @@ class CropCategory(models.Model):
 
 class Insurance(models.Model):
   name = models.CharField(max_length=100,unique=True)
+  policy_no = models.CharField(max_length=100)
   '''
     other details remaining
   '''
