@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load mathfilters %}
+
 {% block title %}
 OutWard
 {% endblock %}
@@ -157,14 +159,14 @@ OutWard
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">किंमत </label>
             <div class="col-sm-9">
-              <input type="text" disabled name="" id="total_price" class="form-control" disabled value="{{entry.get_total_price}}">
+              <input type="text" disabled name="" id="total_price" class="form-control" disabled value="{{entry.initial_weight|mul:entry.price_per_unit}}">
             </div>
           </div>
         </div>
         <div class="col-md-6">
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">
-              कर्जाची रक्कम ({{loan_amount_percentage}}%)</label>
+              कर्जाची रक्कम</label>
             <div class="col-sm-9">
               <!-- <input type="text" disabled class="form-control"> vyas dar -->
               <input type="text" disabled name="" id="total_price" class="form-control" disabled value="{{entry.total_principle}}">
@@ -199,7 +201,7 @@ OutWard
             <label class="col-sm-3 col-form-label">पालिसी नंबर</label>
             <div class="col-sm-9">
               <!-- {{ form.policy_no }} -->
-              <input type="text" disabled class="form-control" value="{{entry.policy_no}}">
+              <input type="text" disabled class="form-control" value="{{entry.insurance.policy_no}}">
 
             </div>
           </div>
@@ -262,7 +264,7 @@ OutWard
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Principle remaining</label>
             <div class="col-sm-9">
-              <input type="text" disabled class="form-control" disabled value="{{entry.principle_remaining}}">
+              <input type="text" disabled class="form-control" disabled value="{{entry.remaining_principle}}">
               <!-- {{ form.vehicle_no }} -->
             </div>
           </div>
@@ -271,7 +273,17 @@ OutWard
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Weight Remaining</label>
             <div class="col-sm-9">
-              <input type="text" disabled class="form-control" disabled value="{{entry.weight}}">
+              <input type="text" disabled class="form-control" disabled value="{{entry.weight}} {{entry.unit}}">
+              <!-- {{ form.driver_name }} -->
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-6">
+          <div class="form-group row">
+            <label class="col-sm-3 col-form-label">Due interest</label>
+            <div class="col-sm-9">
+              <input type="text" disabled class="form-control" disabled value="{{entry.total_pending_interest}}">
               <!-- {{ form.driver_name }} -->
             </div>
           </div>
@@ -280,21 +292,11 @@ OutWard
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">Due rent</label>
             <div class="col-sm-9">
-              <input type="text" disabled class="form-control" disabled value="{{entry.get_due_interest}}">
+              <input type="text" disabled class="form-control" disabled value="{{entry.total_pending_rent}}">
               <!-- {{ form.driver_name }} -->
             </div>
           </div>
         </div>
-        <div class="col-md-6">
-          <div class="form-group row">
-            <label class="col-sm-3 col-form-label">Due interest</label>
-            <div class="col-sm-9">
-              <input type="text" disabled class="form-control" disabled value="{{entry.get_due_interest}}">
-              <!-- {{ form.driver_name }} -->
-            </div>
-          </div>
-        </div>
-
       </div>
       <hr>
       <div class="card-description">जावक </div>

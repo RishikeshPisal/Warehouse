@@ -4,41 +4,37 @@ from django.db.models import Sum, F
 from .models import *
 from .forms import AddEntryForm
 from dateutil.relativedelta import relativedelta
-
+from django.db import transaction
 @login_required(login_url="/")
 def all_entries_view(request):
   entries = Entry.objects.all().order_by('-arrival_date','-departure_date')
   customers = Customer.objects.all()
   crops = Crop.objects.all()  
-  total_initial_sacks = Entry.objects.aggregate(Sum('initial_sacks'))['initial_sacks__sum']
-  loan_amount_percentage = Setting.objects.first().loan_amount_percentage
-  total_due_rent = sum((entry.get_due_rent() for entry in entries))
-  total_due_interest = sum((entry.get_due_interest() for entry in entries))
-  entries = entries.filter(closed=False)
+  total_sacks = Entry.objects.aggregate(Sum('sacks'))['sacks__sum']
+  total_due_rent = sum((entry.rent_from_last_outward() for entry in entries))
+  total_due_interest = sum((entry.interest_from_last_principle() for entry in entries))
+  # entries = entries.filter(closed=False)
 
   total_loan_given = Entry.objects.aggregate(
-    total_loan=Sum(F('initial_weight')*F('price_per_unit'))
+    total_loan=Sum(F('total_principle'))
   )['total_loan']
-  # print(total_loan_given)
   return render(request, 'entries/all_entries.html',{
     'entries':entries,
-    'customers':customers,
+    'customers':customers,  
     'crops':crops,
-    'total_initial_sacks':total_initial_sacks if total_initial_sacks else 0, 
+    'total_sacks':total_sacks if total_sacks else 0, 
     'total_due_rent':total_due_rent,
     'total_due_interest':total_due_interest,
-    'total_loan_given':(total_loan_given*loan_amount_percentage)//100 if total_loan_given else 0,
+    'total_loan_given': total_loan_given,
   })  
 
 @login_required(login_url="/")
 def inward_view(request,notification=None):
   form = AddEntryForm()
-  loan_amount_percentage = None
   one_year_later = datetime.today() + relativedelta(years=1)
   customers = Customer.objects.all()
   insurances = Insurance.objects.all()
   try:
-    loan_amount_percentage = Setting.objects.first().loan_amount_percentage
     if request.method == 'POST':
       form = AddEntryForm(request.POST)
       if form.is_valid():
@@ -48,7 +44,7 @@ def inward_view(request,notification=None):
         notification = form.errors.as_text()
       return redirect('inward_view',notification=notification)
   except Exception as e:
-    print('problem')
+    print('problem',str(e))
     notification = str(e)
   return render(request, 'entries/inward.html',{
     'form':form,
@@ -56,7 +52,6 @@ def inward_view(request,notification=None):
     'customers':customers,
     'insurances':insurances,
     'one_year_later':one_year_later,
-    'loan_amount_percentage':loan_amount_percentage,
   })
 
 @login_required(login_url="/")
@@ -65,7 +60,7 @@ def update_entry_view(request,pk=None):
     entry = Entry.objects.get(id=pk)
     notification = None
     if request.method == 'POST':
-      form = AddEntryForm(request.POST,instance=entry)
+      form = AddEntryForm(data=request.POST,instance=entry)
       if form.is_valid():
         entry = form.save()
         notification = 'success'
@@ -105,9 +100,9 @@ def pay_view(request,notification=None):
   entries = Entry.objects.all().order_by('-arrival_date','-departure_date')
   customers = Customer.objects.all()
   crops = Crop.objects.all()
-  # total_initial_sacks = Entry.objects.aggregate(Sum('initial_sacks'))['initial_sacks__sum']
+  # total_sacks = Entry.objects.aggregate(Sum('initial_sacks'))['initial_sacks__sum']
   # loan_amount_percentage = Setting.objects.first().loan_amount_percentage
-  # total_due_rent = sum((entry.get_due_rent() for entry in entries))
+  # total_due_rent = sum((entry.rent_from_last_outward() for entry in entries))
   # total_due_interest = sum((entry.get_due_interest() for entry in entries))
   entries = entries.filter(closed=False)
 
@@ -120,7 +115,7 @@ def pay_view(request,notification=None):
     'customers':customers,
     'crops':crops,
     'notification':notification,
-    # 'total_initial_sacks':total_initial_sacks if total_initial_sacks else 0, 
+    # 'total_sacks':total_sacks if total_sacks else 0, 
     # 'total_due_rent':total_due_rent,
     # 'total_due_interest':total_due_interest,
     # 'total_loan_given':(total_loan_given*loan_amount_percentage)//100 if total_loan_given else 0,
@@ -140,7 +135,6 @@ def payment_summary(request,pk):
 @login_required(login_url='/')
 def pay_rent(request,pk):
   try:
-    print(request.POST)
     amount = int(request.POST.get('amount'))
     entry = Entry.objects.get(id=pk)
     entry.rent_paid += amount
@@ -170,7 +164,8 @@ def pay_principle(request,pk):
   try:
     amount = int(request.POST.get('amount'))
     entry = Entry.objects.get(id=pk)
-    entry.principle_remaining -= amount
+    entry.remaining_principle -= amount
+    entry.last_principle_date = datetime.now()
     entry.save()
     notification = "principle"
     PaymentHistory.objects.create(entry=entry,principle=amount,type=3)
@@ -204,27 +199,40 @@ def outward_entry_view(request,pk):
       principle = request.POST.get('principle')
       miscellaneous_charges = request.POST.get('miscellaneous')
       femication_charges = request.POST.get('femication')
+      with transaction.atomic():
+        entry.rent_till_last_outward += entry.rent_from_last_outward()
+        entry.interest_till_last_outward += entry.interest_from_last_principle()
 
-      entry.weight -= int(weight) if weight else 0
-      entry.sacks -= int(sacks) if sacks else 0
-      entry.rent_paid += int(rent) if rent else 0
-      entry.interest_paid -= int(interest) if interest else 0
-      entry.principle_remaining -= int(principle) if principle else 0
-      entry.miscellaneous_charges += int(miscellaneous_charges) if miscellaneous_charges else 0
-      entry.femication_charges += int(femication_charges) if femication_charges else 0
-      if entry.weight == 0:
-        entry.closed = True
-      entry.save()
-      
-      payment_history = PaymentHistory.objects.create(
-        entry=entry,
-        rent=rent if rent else 0,
-        interest=interest if interest else 0,
-        principle=principle if principle else 0,
-        type=4
-      )
-      Outward.objects.create(payment_history=payment_history,sacks=sacks,weight=weight)
-      notification = 'success'
+        entry.rent_paid += int(rent) if rent else 0
+        entry.interest_paid += int(interest) if interest else 0
+        entry.miscellaneous_charges += int(miscellaneous_charges) if miscellaneous_charges else 0
+        entry.femication_charges += int(femication_charges) if femication_charges else 0
+
+
+        if weight:
+          entry.weight -= int(weight) 
+          entry.last_weight_change_date = datetime.now()
+          entry.sacks -= int(sacks) if sacks else 0
+        
+        if principle:
+          entry.remaining_principle -= int(principle) if principle else 0
+          entry.last_principle_date = datetime.now()
+
+
+        if entry.weight == 0 and entry.interest_from_last_principle() == 0 and entry.rent_from_last_outward() == 0 and entry.remaining_principle == 0:
+          entry.closed = True
+          entry.departure_date = datetime.now()
+        entry.save()
+        
+        payment_history = PaymentHistory.objects.create(
+          entry=entry,
+          rent=rent if rent else 0,
+          interest=interest if interest else 0,
+          principle=principle if principle else 0,
+          type=4
+        )
+        Outward.objects.create(payment_history=payment_history,sacks=sacks,weight=weight)
+        notification = 'success'
       return redirect('outward_view',notification=notification)
     else:
       notification = None

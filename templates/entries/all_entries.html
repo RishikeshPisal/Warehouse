@@ -54,7 +54,7 @@ All Entries
           </div>  
 
           <div class="text-end">
-            <h2 class="counter" style="visibility: visible;">{{total_initial_sacks}}</h2>
+            <h2 class="counter" style="visibility: visible;">{{total_sacks}}</h2>
             एकूण जमा पोती नग
           </div>
         </div>
@@ -151,9 +151,7 @@ All Entries
                 <th>साठवणेसाठी दिनांक</th>
                 <th>वजन</th>
                 <th>पोती नग</th>
-                <!-- <th>एकूण भाडे </th>
-                <th>भाडे जमा</th>
-                <th>भाडे बाकी</th> -->
+                <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -161,33 +159,27 @@ All Entries
 
               {% for entry in entries %}
               <tr>
-                <td>{{entry.id}}</td>
+                <td>{{forloop.counter}}</td>
                 <td>{{entry.customer.name}}</td>
                 <td>{{entry.customer.contact_number}}</td>
                 <td>{{entry.crop.name}}</td>
                 <td>{{entry.arrival_date|date:"d/m/Y"}}</td>
-                <td>{{entry.initial_weight}} {{entry.unit}}</td>
-                <td>{{entry.initial_sacks}}</td>
-                <!-- <td>{{entry.get_total_rent}}</td>
-                <td class="text-center">
-                  {{entry.rent_paid}}
-                </td>
-                <td>{{entry.get_due_rent}}</td> -->
+                <td>{{entry.weight}} {{entry.unit}}</td>
+                <td>{{entry.sacks}}</td>
+                <!-- <td>{{entry.rent_from_last_outward}}</td>  -->
                 <td>
-                  <!-- <button class="btn btn-primary py-1 w-100 mt-1" onclick="showSwal('pay-rent')">भाडे भरा </button>
-                  <br>
-                  <button class="btn btn-primary py-1 w-100 mt-1">व्याज भरा</button> -->
+                  {% if entry.closed %}
+                    <span class="badge badge-danger">Closed</span>
+                  {% else %}
+                    <span class="badge badge-success">Open</span>
+                  {% endif %}
+                </td> 
+                <td>
+                  <button class="btn btn-primary py-1 w-100 mt-1">व्याज भरा</button>  <br>
                   <a href="{% url 'disabled_inward_view' entry.id %}" class="btn btn-outline-primary py-1 w-100 mt-1">View</a>
                 </td>
 
-                <!-- <td class="text-end">
-                    <button class="btn btn-light">
-                      <i class="typcn typcn-eye text-primary"></i>View
-                    </button>
-                    <button class="btn btn-light">
-                      <i class="typcn typcn-times text-danger"></i>Remove
-                    </button>
-                  </td> -->
+
               </tr>
               {% endfor %}
             </tbody>

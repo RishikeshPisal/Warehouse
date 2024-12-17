@@ -8,8 +8,8 @@ class AddEntryForm(forms.ModelForm):
   class Meta:
     model = Entry
     fields = ['customer','crop','initial_sacks','initial_weight',
-              'unit','crop_category','crop_condition',
-              'price_per_unit','section','insurance_till',
+              'unit','crop_category','crop_condition','total_principle',
+              'price_per_unit','section','insurance_till','insurance',
               'other_details','vehicle_no','driver_name',
             ]
     widgets = {
@@ -17,6 +17,8 @@ class AddEntryForm(forms.ModelForm):
         'initial_sacks': forms.NumberInput(attrs={'class': 'form-control','id':'initial_sacks'}),
         'initial_weight': forms.NumberInput(attrs={'class': 'form-control','id':'initial_weight'}),
         'price_per_unit': forms.NumberInput(attrs={'class': 'form-control','id':'price_per_unit'}),
+        'total_principle': forms.NumberInput(attrs={'class': 'form-control','id':'total_principle'}),
+        'insurance': forms.DateInput(attrs={'type':'date','class': 'form-control','id':'insurance'}),
         'insurance_till': forms.DateInput(attrs={'type':'date','class': 'form-control','id':'insurance_till'}),
         'vehicle_no': forms.TextInput(attrs={'class': 'form-control','id':'vehicle_no'}),
         'driver_name': forms.TextInput(attrs={'class': 'form-control','id':'driver_name'}),

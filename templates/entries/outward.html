@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load mathfilters %}
 {% block title %}
 All entries
 {% endblock %}
@@ -35,8 +36,11 @@ All entries
                 <th>पीक</th>
                 <th>साठवणेसाठी दिनांक</th>
                 <th>एकूण दिवस</th>
-                <th>वजन</th>
+                <!-- <th>वजन</th> -->
+                <th>वजन बाकी</th>
                 <th>पोती नग</th>
+                <th>एकूण मुद्दल </th>
+                <th>मुद्दल बाकी</th>
                 <th>एकूण भाडे </th>
                 <th>भाडे जमा</th>
                 <th>भाडे बाकी</th>
@@ -49,20 +53,24 @@ All entries
             <tbody>
               {% for entry in entries %}
               <tr>
-                <td>{{entry.id}}</td>
+                <td>{{forloop.counter}}</td>
                 <td>{{entry.customer.name}}</td>
                 <td>{{entry.customer.contact_number}}</td>
                 <td>{{entry.crop.name}}</td>
                 <td>{{entry.arrival_date|date:'d/m/Y'}}</td>
                 <td>{{entry.total_days}}</td>
+                <!-- <td>{{entry.initial_weight}} {{entry.unit}}</td> -->
                 <td>{{entry.weight}} {{entry.unit}}</td>
                 <td>{{entry.initial_sacks}}</td>
-                <td>{{entry.get_total_rent}}</td>
+                <td>{{entry.total_principle}}</td>
+                <td>{{entry.remaining_principle}}</td>
+                <td>{{entry.total_pending_rent|add:entry.rent_paid}}</td>
                 <td>{{entry.rent_paid}}</td>
-                <td>{{entry.get_due_rent}}</td>
-                <td>{{entry.get_total_interest}}</td>
+                <td>{{entry.total_pending_rent}}</td>
+                <td>{{entry.total_pending_interest|add:entry.interest_paid}}</td>
                 <td>{{entry.interest_paid}}</td>
-                <td>{{entry.get_due_interest}}</td>
+                <td>{{entry.total_pending_interest}}</td>
+
                 <td>
                   <a href="{% url 'outward_entry_view' entry.id %}" class="btn btn-primary py-1 w-100 mt-1">
                     View  
@@ -94,15 +102,15 @@ All entries
 <script src="{% static 'js/toastDemo.js' %}"></script>
 {% if notification == 'success' %}
 <script>
-  showSuccessToast('Crop Added') 
+  showSuccessToast('Outward Complete') 
 </script>
 {% elif notification == 'deleted' %}
 <script>
-  showSuccessToast('Crop Deleted') 
+  showDangerToast('Something Went Wrong') 
 </script>
 {% elif notification == 'updated' %}
 <script>
-  showSuccessToast('Crop Updated') 
+  showDangerToast('{{notification}}') 
 </script>
 {% endif %}
 {% endblock %}

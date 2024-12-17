@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Template</title>
+    <style>
+        body {
+            font-family: 'Devanagari', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .invoice-container {
+            width: 800px;
+            margin: 10px auto;
+            background-color: #fff;
+            padding: 5px 20px;
+            border: 10px solid brown;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            color: #e04425;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 30px;
+            margin: 0;
+            color: #e04425;
+        }
+
+        .header p {
+            margin: 5px 0;
+            color: #000;
+        }
+
+        .header .left {
+            display: flex;
+            flex-direction: column;
+            width: 40%;
+        }
+
+        .top {
+            display: flex;
+            justify-content: center;
+            gap: 5rem;
+        }
+
+        .logo-image {
+            height: 120px;
+            width: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            /* margin-top: 10px; */
+        }
+
+        .header .left img {
+            height: 100px;
+        }
+
+        .header .bottom {
+            margin: auto;
+        }
+
+        .header .oval {
+            /* position: absolute; */
+            font-size: 20px;
+            width: 150px;
+            border-radius: 50%;
+            padding: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            background-color: #800040;
+        }
+
+        .text-dark-brown {
+            color: #800040 !important;
+        }
+
+        .header .oval .circle {
+            background-color: white;
+            padding: 5px;
+            border-radius: 50%;
+            margin: auto;
+
+        }
+
+        .header .right {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: end;
+            /* gap:1rem */
+        }
+
+        .header .right h1 {
+            font-size: 80px;
+            color: #e04425;
+        }
+
+        .header .right h3 {
+            margin: 0;
+            font-size: 50px;
+            color: #800040;
+        }
+
+        .address-contact {
+            text-align: center;
+            background-color: #D79700;
+            font-size: 20px;
+            padding: 8px;
+            color: #800040;
+        }
+
+        .section-1 {
+            display: flex;
+            justify-content: space-between;
+            color: #6B2C2B;
+        }
+
+        .section-1 .left,
+        .section-1 .right {
+            width: 50%;
+
+        }
+
+        .section-1 p {
+            font-size: 20px;
+            margin: 5px
+        }
+
+        .section-2 p {
+            font-size: 20px;
+            color: #6B2C2B;
+            /* line-height: 2rem; */
+            text-underline-offset: 5px;
+            word-spacing: 10px;
+        }
+
+        .section-3,
+        .signature-section {
+            margin-top: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        table th,
+        table td {
+            padding: 10px;
+            border: 1px solid #000;
+            font-size: 14px;
+        }
+
+        .section-3 th {
+            /* background-color: #e2b44f; */
+            /* color: #131360; */
+            font-weight: bold;
+        }
+
+        .section-3 td {
+            background-color: #fdf4e3;
+        }
+
+        .section-3 table tr td:first-child {
+            font-weight: bold;
+        }
+
+        .section-4 p {
+            color: #6B2C2B;
+            margin: 5px;
+
+        }
+
+        .section-5 p {
+            color: #6B2C2B;
+            margin: 20px auto 10px;
+        }
+
+        .section-6 table td,
+        .section-6 table th {
+            padding: 10px 8px;
+            font-size: 12px;
+            max-width: 60px;
+            text-wrap: wrap;
+            word-break: break-word;
+        }
+
+        .section-7 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .section-7 .note,
+        .section-7 .signature {
+            color: #e04425;
+        }
+
+        .note-section {
+            font-size: 12px;
+            margin-top: 15px;
+            text-align: center;
+            color: #e04425;
+            padding-top: 10px;
+        }
+
+        @media print {
+            html * {
+                visibility: hidden;
+            }
+
+            .invoice-container,
+            .invoice-container * {
+                visibility: visible;
+            }
+
+            .invoice-container {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: auto;
+                margin: 0;
+                padding: 20px;
+                /* width:794px;
+                height:1123px; */
+                width: 210mm;
+                height: 297mm;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="other-content">
+        <button onclick="printInvoice()">Print Invoice</button>
+    </div>
+    <div class="invoice-container">
+        <div class="header ">
+            <div class="left">
+                <div class="top">
+                    <div class="logo-image">
+                        || श्री महादेव प्रसन्न ||
+                        <img src="../../static/images/shiva_logo.webp" alt="Shiva Logo">
+                    </div>
+                    <div class="logo-image">
+                        || श्री खंडोबा प्रसन्न ||
+                        <img src="../../static/images/khandoba_image.jpeg" alt="Khandoba Logo">
+                    </div>
+                </div>
+                <div class="bottom">
+                    <div class="oval">
+                        <div class="circle"></div>
+                        वखार पावती
+                        <div class="circle"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="right">
+                <h1>शिवमल्हार</h1>
+                <h3>वेअर हाऊस</h3>
+            </div>
+        </div>
+        <div class="address-contact">
+            घुंगराळा ता. नायगाव (खै.), जि. नांदेड मो. 9309529840, 7709121234
+        </div>
+
+        <div class="section-1">
+            <div class="left">
+                <p class="text-dark-brown">हस्तांतरीय / अहस्तांतरीय</p>
+                <p>क्रमांक: 201</p>
+                <p>वखार अनुज्ञापन लायसेन्स क्रमांक</p>
+            </div>
+            <div class="right">
+                <p>वखारीचे ठिकाण : </p>
+                <p>गोडाउन नं : 1 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp; चौक नं : 4</p>
+                <p>पावती दिल्याची तारीख: </p>
+                <p>पर्यंत चालू :</p>
+            </div>
+        </div>
+        <div class="section-2">
+            <p>
+                श्री <u>{{name}}</u> राहणार <u>{{village}}</u> यांचे कडुन खालील वर्णन  केलेला माल मिळाला व तो त्यांनी स्वतःचा माल  ठेवण्यासाठी दिला
+                किंवा हा माल श्री <u>{{name}}</u> रा. <u>{{village}}</u> ता. <u>{{taluka}}</u> जि. <u>{{district}}</u>
+                यांच्या मर्कन्टाईल एजंट/शेतकरी या नात्याने ठेवला आहे.
+            </p>
+        </div>
+
+        <div class="section-3">
+            <table>
+                <tr>
+                    <th rowspan="2">मालाचे वर्णन</th>
+                    <th rowspan="2">वर्ग किंवा प्रमाणित दर्जा किंवा प्रत</th>
+                    <th rowspan="2">स्थिती चांगली/बरी साधारण</th>
+                    <th rowspan="2">पोती नग</th>
+                    <th rowspan="2">वजन किंवा मापानुसार एकुण माल क्विंटलमध्ये किलोग्रॅममध्यें</th>
+                    <th rowspan="2">ठेवीदाराच्या मालावर असलेल्या ओळखणान्या खुण</th>
+                    <th rowspan="2">माल ठेवते वेळी त्याचा बाजारातील दर</th>
+                    <th colspan="2">किंमत</th>
+                    <th rowspan="2">माल साठविण्याचा दर</th>
+                </tr>
+                <tr>
+                    <th>रु.</th>
+                    <th>पैसे</th>
+                </tr>
+                <tr>
+                    <td>सोयाबीन</td>
+                    <td>साधारण</td>
+                    <td>साधारण</td>
+                    <td>1200<br>काटे</td>
+                    <td>64800</td>
+                    <td>-</td>
+                    <td>4900/-</td>
+                    <td>3175200/-</td>
+                    <td>00/-</td>
+                    <td>प्रति पोते दरमहा</td>
+                </tr>
+            </table>
+        </div>
+        <div class="section-4">
+            <p>नाव अनुज्ञापन क्रमांक <u> {{variable}}</u> </p>
+            <p> आग व इतर कारणासाठी विमा उतरला असल्यास कंपनीचे नाव <u> {{insurance_company_name}}.</u>
+            <p> पॉलिसी नं. <u> {{policy_number}}.</u> </p>
+            <p> अक्षरी रु. <u> {{amount_in_rupees}}.</u> </p>
+            <p> सदरचा माल साठवणेसाठी दिनांक <u> {{start_date}}</u> ते <u> {{end_date}}</u> पर्यंत घेतला आहे.</p>
+            </p>
+        </div>
+        <div class="section-5">
+            <p>खाली नमुद केलेला माल या पावतीवरून वेअर हाउस मधून मुक्त केलेला आहे. शिल्लक माल मुक्त केलेल्या मालावरील  न
+                दिलेला वेअरहाउस चार्जेस व उचल रकमेपोटी ठेवून घेतला आहे</p>
+        </div>
+        <div class="section-6">
+            <table>
+                <tr>
+                    <th colspan="11">वेअरहाऊस चार्जेस व उचल रकमेपोटी ठेवून घेतला आहे.</th>
+                </tr>
+                <tr>
+                    <th rowspan="2">दिनांक</th>
+                    <th rowspan="2" colspan="1">पावती  क्रमांक</th>
+                    <th colspan="2">वसुल रक्कम</th>
+                    <th colspan="3">दिलेल्या मालाची संख्या नं./वजन</th>
+                    <th rowspan="2">सही</th>
+                    <th colspan="3">पावती प्रमाणे शिल्लक माल</th>
+                </tr>
+                <tr>
+                    <th>रु.</th>
+                    <th>पै.</th>
+                    <th>बॅग्ज</th>
+                    <th>क्विंटल</th>
+                    <th>किलोग्रॅम</th>
+                    <th>बॅग्ज</th>
+                    <th>क्विंटल</th>
+                    <th>किलोग्रॅम</th>
+                </tr>
+                <tr>
+                    <td>{{vafadasdfaasdfafd}}</td>
+                    <td>{{vafadasdfaasdfafd}}</td>
+                    <td>{{vafadasdfaasdfafd}}</td>
+                    <td>{{vafadasdfaasdfafd}}</td>
+                    <td>{{vafadasdfaasdfafd}}</td>
+                    <td>{{vafadasdfaasdfafd}}</td>
+                    <td>{{vafadasdfaasdfafd}}</td>
+                    <td>{{vafadasdfaasdfafd}}</td>
+                    <td>{{vafadasdfaasdfafd}}</td>
+                    <td>{{vafadasdfaasdfafd}}</td>
+                    <td>{{vafadasdfaasdfafd}}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="section-7">
+            <!-- <div>
+                <p class="loan-mark">Loan Mark: ______________________</p> -->
+                <p class="note"> नोट: सदरील माल साठा महिन्य देण्यांत येईल.</p>
+            <!-- </div> -->
+
+            <p class="signature">वेअरहाऊस किंवा एजंटची सही: _____________________</p>
+        </div>
+    </div>
+
+</body>
+<script>
+    function printInvoice() {
+        window.print();
+    }
+</script>
+
+</html>

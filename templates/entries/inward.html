@@ -172,10 +172,11 @@ Add Entry
         <div class="col-md-6">
           <div class="form-group row">
             <label class="col-sm-3 col-form-label">
-              कर्जाची रक्कम ({{loan_amount_percentage}}%)</label>
+              कर्जाची रक्कम </label>
             <div class="col-sm-9">
               <!-- <input type="text" class="form-control"> vyas dar -->
-              <input type="number" name="" id="loan_amount" class="form-control" disabled value="0">
+              <!-- <input type="number" name="" id="loan_amount" class="form-control" disabled value="0"> -->
+              {{form.total_principle}}
             </div>
           </div>
         </div>
@@ -367,9 +368,10 @@ Add Entry
     price_per_unit = parseInt(document.getElementById('price_per_unit').value)
     initial_weight = parseInt(document.getElementById('initial_weight').value)
     if (!isNaN(price_per_unit) && !isNaN(initial_weight)) {
-      total_price.classList.remove('d-none')
       total_price.value = price_per_unit * initial_weight
-      loan_amount.value = (total_price.value * loan_amount_percentage) / 100
+    }
+    else{
+      total_price.value = 0
     }
   }
   document.getElementById('price_per_unit').onkeyup = calculate_total_price

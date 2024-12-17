@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load mathfilters %}
 {% block title %}
 Pay
 {% endblock %}
@@ -150,7 +151,8 @@ Pay
                 <th>पीक</th>
                 <th>साठवणेसाठी दिनांक</th>
                 <th>एकूण दिवस</th>
-                <th>वजन</th>
+                <!-- <th>वजन</th> -->
+                <th>वजन बाकी</th>
                 <th>पोती नग</th>
                 <th>एकूण मुद्दल </th>
                 <th>मुद्दल बाकी</th>
@@ -170,22 +172,23 @@ Pay
 
               {% for entry in entries %}
               <tr>
-                <td>{{entry.id}}</td>
+                <td>{{forloop.counter}}</td>
                 <td>{{entry.customer.name}}</td>
                 <td>{{entry.customer.contact_number}}</td>
                 <td>{{entry.crop.name}}</td>
                 <td>{{entry.arrival_date|date:'d/m/Y'}}</td>
                 <td>{{entry.total_days}}</td>
-                <td>{{entry.initial_weight}} {{entry.unit}}</td>
+                <!-- <td>{{entry.initial_weight}} {{entry.unit}}</td> -->
+                <td>{{entry.weight}} {{entry.unit}}</td>
                 <td>{{entry.initial_sacks}}</td>
                 <td>{{entry.total_principle}}</td>
-                <td>{{entry.principle_remaining}}</td>
-                <td>{{entry.get_total_rent}}</td>
+                <td>{{entry.remaining_principle}}</td>
+                <td>{{entry.total_pending_rent|add:entry.rent_paid}}</td>
                 <td>{{entry.rent_paid}}</td>
-                <td>{{entry.get_due_rent}}</td>
-                <td>{{entry.get_total_interest}}</td>
+                <td>{{entry.total_pending_rent}}</td>
+                <td>{{entry.total_pending_interest|add:entry.interest_paid}}</td>
                 <td>{{entry.interest_paid}}</td>
-                <td>{{entry.get_due_interest}}</td>
+                <td>{{entry.total_pending_interest}}</td>
                 <td>
                   <button class="btn btn-primary py-1 w-100 mt-1" 
                     onclick="showSwal('pay-rent','{{entry.id}}')">
@@ -230,10 +233,10 @@ Pay
                     </div>
                     <div class="col-md-12">
                       <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">एकूण भाडे</label>
+                        <label class="col-sm-3 col-form-label">भाडे बाकी</label>
                         <div class="col-sm-9">
                           <!-- <input type="text" class="form-control"> -->
-                          <input type="number" class="form-control" disabled id="total_rent-{{entry.id}}" value="{{entry.get_due_rent}}">
+                          <input type="number" class="form-control" disabled id="total_rent-{{entry.id}}" value="{{entry.rent_from_last_outward}}">
                         </div>
                       </div>
                     </div>
@@ -271,10 +274,10 @@ Pay
                     </div>
                     <div class="col-md-12">
                       <div class="form-group row">
-                        <label class="col-sm-3 col-form-label">एकूण व्याज</label>
+                        <label class="col-sm-3 col-form-label">व्याज बाकी</label>
                         <div class="col-sm-9">
                           <!-- <input type="text" class="form-control"> -->
-                          <input type="number" class="form-control" disabled id="total_interest-{{entry.id}}" value="{{entry.get_total_interest}}">
+                          <input type="number" class="form-control" disabled id="total_interest-{{entry.id}}" value="{{entry.interest_from_last_principle}}">
                         </div>
                       </div>
                     </div>
@@ -315,7 +318,7 @@ Pay
                         <label class="col-sm-3 col-form-label">मुद्दल बाकी </label>
                         <div class="col-sm-9">
                           <!-- <input type="text" class="form-control"> -->
-                          <input type="number" class="form-control" disabled id="total_principle-{{entry.id}}" value="{{entry.principle_remaining}}">
+                          <input type="number" class="form-control" disabled id="total_principle-{{entry.id}}" value="{{entry.remaining_principle}}">
                         </div>
                       </div>
                     </div>
@@ -533,10 +536,10 @@ Pay
         const total_rent_value = parseFloat(total_rent_input.value) || 0;
 
         // Calculate the remaining rent
-        const remaining_rent = total_rent - pay_value;
+        const rent_till_last_outward = total_rent - pay_value;
 
         // Update the total rent input field with the new value
-        total_rent_input.value = remaining_rent >= 0 ? remaining_rent : 0;
+        total_rent_input.value = rent_till_last_outward >= 0 ? rent_till_last_outward : 0;
       });
  
       document.getElementsByClassName('swal-button--submit')[0].addEventListener('click',()=>{
@@ -589,10 +592,10 @@ Pay
         const pay_value = parseFloat(pay_interest_input.value) || 0;
 
         // Calculate the remaining rent
-        const remaining_interest = total_interest - pay_value;
+        const interest_till_last_outward = total_interest - pay_value;
 
         // Update the total rent input field with the new value
-        total_interest_input.value = remaining_interest >= 0 ? remaining_interest : 0;
+        total_interest_input.value = interest_till_last_outward >= 0 ? interest_till_last_outward : 0;
       });
  
       document.getElementsByClassName('swal-button--submit')[0].addEventListener('click',()=>{
@@ -720,10 +723,10 @@ Pay
       const total_rent_value = parseFloat(total_rent_input.value) || 0;
 
       // Calculate the remaining rent
-      const remaining_rent = total_rent - pay_value;
+      const rent_till_last_outward = total_rent - pay_value;
 
       // Update the total rent input field with the new value
-      total_rent_input.value = remaining_rent >= 0 ? remaining_rent : 0;
+      total_rent_input.value = rent_till_last_outward >= 0 ? rent_till_last_outward : 0;
     });
   });
 </script> -->
