@@ -5,6 +5,7 @@ from .models import *
 from .forms import AddEntryForm
 from dateutil.relativedelta import relativedelta
 from django.db import transaction
+
 @login_required(login_url="/")
 def all_entries_view(request):
   entries = Entry.objects.all().order_by('-arrival_date','-departure_date')
@@ -223,7 +224,7 @@ def outward_entry_view(request,pk):
           entry.closed = True
           entry.departure_date = datetime.now()
         entry.save()
-        
+
         payment_history = PaymentHistory.objects.create(
           entry=entry,
           rent=rent if rent else 0,

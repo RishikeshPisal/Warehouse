@@ -3,9 +3,11 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-
-########################### Models #################################
 from entries.models import Entry
+from customers.models import Customer
+from configurations.models import Crop
+
+
 ####################################################################
 
 def login_view(request):
@@ -30,8 +32,27 @@ def logout_view(request):
 @login_required
 def home(request):
     entries = Entry.objects.all().order_by('-arrival_date','-departure_date')
-    print('here')
-    return render(request,'dashboard.html',{'entries':entries})
+    total_sacks = 0
+    total_weight = 0
+    total_pending_principle = 0
+    total_pending_interest = 0
+    total_pending_rent = 0
+    for entry in entries:
+        total_sacks += entry.sacks
+        total_weight += entry.weight
+        total_pending_principle += entry.total_principle
+        total_pending_interest  += entry.total_pending_interest()
+        total_pending_rent  += entry.total_pending_rent()
+    total_customers = Customer.objects.all().count()
+    total_crops = Crop.objects.all().count()
+    
+    return render(request,'dashboard.html',{
+        'entries':entries,
+        'total_sacks':total_sacks,
+        'total_weight':total_weight,
+        'total_pending_interest':total_pending_interest,
+        'entries':entries,
+    })
 
 
 
