@@ -30,6 +30,8 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     'rishipisal.pythonanywhere.com',
     'www.rishipisal.pythonanywhere.com',
+    'originclass.in',
+    'www.originclass.in'
 ]
 
 
