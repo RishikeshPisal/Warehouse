@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'mathfilters',
     'corsheaders',
-    'application',
+
     'configurations',
     'customers',
     'user',
