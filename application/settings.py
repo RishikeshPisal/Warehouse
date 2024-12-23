@@ -96,13 +96,12 @@ WSGI_APPLICATION = "application.wsgi.application"
 #         "ENGINE": "django.db.backends.sqlite3",
 #         "NAME": BASE_DIR / "db.sqlite3",
 #     }
-# }
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', 
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'Warehouse',
-        'USER': 'root',
-        'PASSWORD': 'root123',
+        'USER': 'warehouse',
+        'PASSWORD': 'Balasahebpawar9@',
         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
     }
