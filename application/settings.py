@@ -31,7 +31,8 @@ ALLOWED_HOSTS = [
     'rishipisal.pythonanywhere.com',
     'www.rishipisal.pythonanywhere.com',
     'originclass.in',
-    'www.originclass.in'
+    'www.originclass.in',
+    '82.112.227.142'
 ]
 
 
@@ -46,7 +47,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'mathfilters',
     'corsheaders',
-
+    'application',
     'configurations',
     'customers',
     'user',
@@ -91,21 +92,22 @@ WSGI_APPLICATION = "application.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     "default": {
-#         "ENGINE": "django.db.backends.sqlite3",
-#         "NAME": BASE_DIR / "db.sqlite3",
-#     }
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'Warehouse',
-        'USER': 'warehouse',
-        'PASSWORD': 'Balasahebpawar9@',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
-        'PORT': '3306',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'Warehouse',
+#         'USER': 'warehouse',
+#         'PASSWORD': 'Balasahebpawar9@',
+#         'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+#         'PORT': '3306',
+#     }
+# }
 
 
 # Password validation
