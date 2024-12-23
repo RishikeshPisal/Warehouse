@@ -4,12 +4,10 @@ from django.contrib.admin.sites import AlreadyRegistered
 
 # Get all installed apps
 app_configs = apps.get_app_configs()
-print('here')
+
 for app_config in app_configs:
     # Loop through all models in each app
-    print(app_config)
     for model_name, model in app_config.models.items():
-        print(model_name)
         try:
             if model_name in ['user','customer','entry','crop','unit','cropcondition','cropcategory','insurance','section','setting','paymenthistory']:
               # admin.site.register(model)
