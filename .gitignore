@@ -19,16 +19,13 @@ local_settings.py
 
 # Django Media and Static Files
 media/
-staticfiles/
 
-# Migrations (optional, see discussion below)
+
+# Migrations 
 **/migrations/**
 
 # Editor & IDE Files
-*.idea/
 .vscode/
-*.sublime-project
-*.sublime-workspace
 
 # OS-Specific Files
 .DS_Store

@@ -5,6 +5,7 @@ from .views import *
 urlpatterns = [
   # re_path(r'^settings(?:/(?P<notification>[\w-]+))?/$', settings_view, name="settings_view"),
   re_path(r'^inward(?:/(?P<notification>[\w-]+))?/$', inward_view, name="inward_view"),
+  re_path(r'^invoice/(?P<entry_id>\d+)/$', invoice_view, name="invoice_view"),
   re_path(r'^view(?:/(?P<pk>\d+))?/$', disabled_inward_view, name="disabled_inward_view"),
   re_path(r'^pay(?:/(?P<notification>[\w-]+))?/$', pay_view, name="pay_view"),
   re_path(r'^pay_rent(?:/(?P<pk>\d+))?/$', pay_rent, name="pay_rent"),

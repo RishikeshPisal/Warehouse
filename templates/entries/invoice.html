@@ -1,3 +1,5 @@
+{% load static %}
+{% load mathfilters %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -55,6 +57,7 @@
 
         .logo-image {
             height: 120px;
+            min-width: 120px;
             width: 120px;
             display: flex;
             flex-direction: column;
@@ -257,11 +260,11 @@
                 <div class="top">
                     <div class="logo-image">
                         || श्री महादेव प्रसन्न ||
-                        <img src="../../static/images/shiva_logo.webp" alt="Shiva Logo">
+                        <img src="{% static 'images/shiva_logo.webp' %}" alt="Shiva Logo">
                     </div>
                     <div class="logo-image">
                         || श्री खंडोबा प्रसन्न ||
-                        <img src="../../static/images/khandoba_image.jpeg" alt="Khandoba Logo">
+                        <img src="{% static 'images/khandoba_image.jpeg' %}" alt="Khandoba Logo">
                     </div>
                 </div>
                 <div class="bottom">
@@ -284,20 +287,20 @@
         <div class="section-1">
             <div class="left">
                 <p class="text-dark-brown">हस्तांतरीय / अहस्तांतरीय</p>
-                <p>क्रमांक: 201</p>
+                <p>क्रमांक: {{entry.id}}</p>
                 <p>वखार अनुज्ञापन लायसेन्स क्रमांक</p>
             </div>
             <div class="right">
-                <p>वखारीचे ठिकाण : </p>
-                <p>गोडाउन नं : 1 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp; चौक नं : 4</p>
-                <p>पावती दिल्याची तारीख: </p>
-                <p>पर्यंत चालू :</p>
+                <p>वखारीचे ठिकाण : {{entry.customer.address}}</p>
+                <p>गोडाउन नं : 1 &emsp;&emsp;&emsp;&emsp;&emsp;&emsp; चौक नं : {{entry.section}}</p>
+                <p>पावती दिल्याची तारीख: {{entry.arrival_date|date:'d/m/Y'}}</p>
+                <p>पर्यंत चालू : {{entry.insurance_till|date:'d/m/Y'}}</p>
             </div>
         </div>
         <div class="section-2">
             <p>
-                श्री <u>{{name}}</u> राहणार <u>{{village}}</u> यांचे कडुन खालील वर्णन  केलेला माल मिळाला व तो त्यांनी स्वतःचा माल  ठेवण्यासाठी दिला
-                किंवा हा माल श्री <u>{{name}}</u> रा. <u>{{village}}</u> ता. <u>{{taluka}}</u> जि. <u>{{district}}</u>
+                श्री <u>{{entry.customer.name}}</u> राहणार <u>{{entry.customer.village}}</u> यांचे कडुन खालील वर्णन  केलेला माल मिळाला व तो त्यांनी स्वतःचा माल  ठेवण्यासाठी दिला
+                किंवा हा माल श्री <u>{{entry.customer.name}}</u> रा. <u>{{entry.customer.address}}</u> ता. <u>{{entry.customer.taluka}}</u> जि. <u>{{entry.customer.zila}}</u>
                 यांच्या मर्कन्टाईल एजंट/शेतकरी या नात्याने ठेवला आहे.
             </p>
         </div>
@@ -320,6 +323,18 @@
                     <th>पैसे</th>
                 </tr>
                 <tr>
+                    <td>{{entry.crop.name}}</td>
+                    <td>साधारण</td>
+                    <td>साधारण</td>
+                    <td>{{entry.initial_sacks}}<br>कट्टे</td>
+                    <td>{{entry.initial_weight}} {{entry.unit}}</td>
+                    <td>-</td>
+                    <td>{{entry.price_per_unit}}/-</td>
+                    <td>{{entry.price_per_unit|mul:entry.initial_weight}}/-</td>
+                    <td>00</td>
+                    <td>प्रति {{entry.unit}} दरमहा</td>
+                </tr>
+                <!-- <tr>
                     <td>सोयाबीन</td>
                     <td>साधारण</td>
                     <td>साधारण</td>
@@ -330,15 +345,15 @@
                     <td>3175200/-</td>
                     <td>00/-</td>
                     <td>प्रति पोते दरमहा</td>
-                </tr>
+                </tr> -->
             </table>
         </div>
         <div class="section-4">
             <p>नाव अनुज्ञापन क्रमांक <u> {{variable}}</u> </p>
-            <p> आग व इतर कारणासाठी विमा उतरला असल्यास कंपनीचे नाव <u> {{insurance_company_name}}.</u>
-            <p> पॉलिसी नं. <u> {{policy_number}}.</u> </p>
-            <p> अक्षरी रु. <u> {{amount_in_rupees}}.</u> </p>
-            <p> सदरचा माल साठवणेसाठी दिनांक <u> {{start_date}}</u> ते <u> {{end_date}}</u> पर्यंत घेतला आहे.</p>
+            <p> आग व इतर कारणासाठी विमा उतरला असल्यास कंपनीचे नाव <u> {{entry.insurance}}.</u>
+            <p> पॉलिसी नं. <u> {{entry.insurance.policy_no}}.</u> </p>
+            <p> अक्षरी रु. <u> {{entry.price_per_unit|mul:entry.initial_weight}}.</u> </p>
+            <p> सदरचा माल साठवणेसाठी दिनांक <u> {{entry.arrival_date}}</u> ते <u> {{entry.insurance_till}}</u> पर्यंत घेतला आहे.</p>
             </p>
         </div>
         <div class="section-5">

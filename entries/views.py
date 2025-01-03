@@ -56,6 +56,12 @@ def inward_view(request,notification=None):
   })
 
 @login_required(login_url="/")
+def invoice_view(request,entry_id=None):
+  entry = Entry.objects.get(pk=entry_id)
+  return render(request,'entries/invoice.html',{'entry':entry})
+
+
+@login_required(login_url="/")
 def update_entry_view(request,pk=None):
   try:
     entry = Entry.objects.get(id=pk)

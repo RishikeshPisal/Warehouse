@@ -16,6 +16,7 @@ class Entry(models.Model):
   crop_condition = models.CharField(max_length=25)
   crop_category = models.CharField(max_length=25)
   section = models.CharField(max_length=25)
+  
 
   initial_sacks = models.IntegerField()
   sacks = models.IntegerField()
